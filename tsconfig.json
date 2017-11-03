@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es2015",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "alwaysStrict": true,
+    "noImplicitAny": true,
+    "strict": true,
+    "types": ["jest"]
+  },
+  "exclude": ["node_modules", "**/node_modules/*"]
+}
