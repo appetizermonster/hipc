@@ -1,3 +1,4 @@
+import ListMap from '../../lib/ListMap';
 import {
   IChannelSender,
   IChannelServer,
@@ -8,12 +9,12 @@ import { ILocalChannelServer } from './types';
 export default class LocalChannelServer
   implements IChannelServer, ILocalChannelServer {
   private channelName: string;
-  private handlersByTopic: Map<string, ServerTopicHandler[]>;
+  private handlerListMap: ListMap<string, ServerTopicHandler>;
   private isStarted: boolean;
 
   public constructor(channelName: string) {
     this.channelName = channelName;
-    this.handlersByTopic = new Map();
+    this.handlerListMap = new ListMap();
     this.isStarted = false;
   }
 
@@ -23,25 +24,15 @@ export default class LocalChannelServer
   }
 
   public listen(topic: string, handler: ServerTopicHandler): void {
-    let handlers = this.handlersByTopic.get(topic);
-    if (!handlers) {
-      handlers = [];
-      this.handlersByTopic.set(topic, handlers);
-    }
-    handlers.push(handler);
+    this.handlerListMap.addToList(topic, handler);
   }
 
   public unlisten(topic: string, handler: ServerTopicHandler): void {
-    const handlers = this.handlersByTopic.get(topic);
-    if (!handlers) return;
-
-    const idx = handlers.indexOf(handler);
-    if (idx < 0) return;
-    handlers.splice(idx, 1);
+    this.handlerListMap.removeFromList(topic, handler);
   }
 
   public emit(topic: string, sender: IChannelSender, payload: {}): void {
-    const handlers = this.handlersByTopic.get(topic);
+    const handlers = this.handlerListMap.getList(topic);
     if (!handlers) return;
 
     for (const handler of handlers) {
