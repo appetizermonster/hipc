@@ -1,4 +1,5 @@
 import * as Rx from 'rxjs';
+
 import { IChannel } from './types';
 
 export function observableFromChannel<T>(
