@@ -1,5 +1,5 @@
-import { IChannelSender } from '../../../types';
-import LocalChannelServer from '../LocalChannelServer';
+import LocalChannelServer from '../../../src/channels/local/LocalChannelServer';
+import { IChannelSender } from '../../../src/types';
 
 describe('LocalChannelServer', () => {
   function createSender(): IChannelSender {

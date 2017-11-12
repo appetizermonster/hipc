@@ -3,7 +3,7 @@ import {
   IChannelClient,
   IChannelSender
 } from '../../types';
-import central from './central';
+import LocalChannelCentral from './LocalChannelCentral';
 import { ILocalChannelServer } from './types';
 
 export default class LocalChannelClient implements IChannelClient {
@@ -24,10 +24,10 @@ export default class LocalChannelClient implements IChannelClient {
   }
 
   public async connect(): Promise<void> {
-    if (!central.isServerRunning(this.channelName))
+    if (!LocalChannelCentral.isServerRunning(this.channelName))
       throw new Error('Cannot find a server');
 
-    this.connectedServer = central.getServer(this.channelName);
+    this.connectedServer = LocalChannelCentral.getServer(this.channelName);
   }
 
   public send(topic: string, payload: {}): void {

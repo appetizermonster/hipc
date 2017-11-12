@@ -1,6 +1,6 @@
-import central from '../central';
-import LocalChannelClient from '../LocalChannelClient';
-import { ILocalChannelServer } from '../types';
+import LocalChannelCentral from '../../../src/channels/local/LocalChannelCentral';
+import LocalChannelClient from '../../../src/channels/local/LocalChannelClient';
+import { ILocalChannelServer } from '../../../src/channels/local/types';
 
 describe('local.ts', () => {
   describe('LocalChannelClient', () => {
@@ -8,12 +8,12 @@ describe('local.ts', () => {
       const server: ILocalChannelServer = {
         emit: jest.fn((topic, sender, payload) => sender.send(topic, payload))
       };
-      central.addServer(channelName, server);
+      LocalChannelCentral.addServer(channelName, server);
       return server;
     }
 
     function clearAllServers() {
-      central.clearAllServers();
+      LocalChannelCentral.clearAllServers();
     }
 
     beforeEach(() => clearAllServers());
