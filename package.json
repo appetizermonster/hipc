@@ -1,8 +1,7 @@
 {
   "name": "hrpc",
   "version": "0.0.1",
-  "description":
-    "A typesafe RPC library for electron; built with TypeScript",
+  "description": "A typesafe RPC library for electron; built with TypeScript",
   "main": "index.js",
   "author": "Heejin Lee <hjhome2000@naver.com>",
   "repository": {

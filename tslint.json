@@ -10,7 +10,8 @@
     "object-literal-sort-keys": false,
     "no-console": false,
     "no-empty": false,
-    "prettier": true
+    "prettier": true,
+    "ordered-imports": true
   },
   "rulesDirectory": ["tslint-plugin-prettier"]
 }
