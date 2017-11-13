@@ -1,5 +1,5 @@
+import PromiseUtils from '../../../lib/PromiseUtils';
 import SocketChannelClient from '../../../src/channels/socket/SocketChannelClient';
-import PromiseUtils from '../../utils/PromiseUtils';
 import MockServer from './MockServer';
 
 describe('SocketChannelClient', () => {
