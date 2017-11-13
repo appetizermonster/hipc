@@ -25,7 +25,7 @@ export default class MockServer {
     this.server.listen(this.socketPath);
   }
 
-  public listenSocketDataEvent(eventHandler: (data: any) => {}): void {
+  public listenSocketDataEvent(eventHandler: (data: any) => void): void {
     this.socketDataEventHandler = eventHandler;
   }
 
