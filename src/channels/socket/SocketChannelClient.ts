@@ -1,7 +1,7 @@
 import net from 'net';
 
 import ListMap from '../../../lib/ListMap';
-import RxUtils from '../../RxUtils';
+import RxUtils from '../../../lib/RxUtils';
 import { ClientTopicHandler, IChannelClient } from '../../types';
 import SocketUtils from './SocketUtils';
 
@@ -10,8 +10,8 @@ export default class SocketChannelClient implements IChannelClient {
   private socket: net.Socket | null;
   private listenerListMap: ListMap<string, ClientTopicHandler>;
 
-  public constructor(identifier: string) {
-    this.socketPath = SocketUtils.getSocketPath(identifier);
+  public constructor(socketId: string) {
+    this.socketPath = SocketUtils.getSocketPath(socketId);
     this.socket = null;
     this.listenerListMap = new ListMap();
   }
@@ -66,11 +66,13 @@ export default class SocketChannelClient implements IChannelClient {
     console.error(e);
   }
 
-  private onSocketData(json: any): void {
-    const data = JSON.parse(json);
-    if (!data) return;
+  private onSocketData(data: string): void {
+    const isJson = data && data.startsWith('{');
+    if (!isJson) return;
 
-    const { topic, payload } = data;
+    const obj = JSON.parse(data);
+    const { topic, payload } = obj;
+
     const listeners = this.listenerListMap.getList(topic);
     if (listeners) {
       listeners.forEach(x => x(payload));
