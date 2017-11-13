@@ -20,13 +20,23 @@ export default class SocketChannelClient implements IChannelClient {
     this.socket = new net.Socket();
     this.socket.setEncoding('utf8');
     this.socket.on('error', this.onSocketError.bind(this));
-    this.socket.on('data', this.onSocketData.bind(this));
     this.socket.connect(this.socketPath);
 
+    // Waiting for the connection
     await RxUtils.observableFromEvent(this.socket, 'connect')
       .take(1)
       .timeout(1000)
       .toPromise();
+
+    // Handshaking
+    this.socket.write('connection');
+    await RxUtils.observableFromEvent(this.socket, 'data')
+      .filter(data => data === 'connection_reply')
+      .take(1)
+      .timeout(1000)
+      .toPromise();
+
+    this.socket.on('data', this.onSocketData.bind(this));
   }
 
   public close(): void {

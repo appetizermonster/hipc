@@ -19,21 +19,16 @@ export default class MockServer {
     this.socketDataEventHandler = null;
   }
 
-  public listen() {
+  public listen(eventHandler: (data: any) => void) {
     this.server = new net.Server();
     this.server.on('connection', this.onConnection.bind(this));
     this.server.listen(this.socketPath);
-  }
-
-  public listenSocketDataEvent(eventHandler: (data: any) => void): void {
     this.socketDataEventHandler = eventHandler;
   }
 
-  public sendJsonToConnectedSocket(obj: any): void {
+  public sendToConnectedSocket(data: string): void {
     if (!this.connectedSocket) throw new Error('no connected socket');
-
-    const json = JSON.stringify(obj);
-    this.connectedSocket.write(json);
+    this.connectedSocket.write(data);
   }
 
   public close() {
