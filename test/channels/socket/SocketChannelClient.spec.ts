@@ -1,8 +1,6 @@
-import net from 'net';
-
 import SocketChannelClient from '../../../src/channels/socket/SocketChannelClient';
-import SocketUtils from '../../../src/channels/socket/SocketUtils';
 import PromiseUtils from '../../utils/PromiseUtils';
+import MockServer from './MockServer';
 
 describe('SocketChannelClient', () => {
   describe('connect', () => {
@@ -12,15 +10,15 @@ describe('SocketChannelClient', () => {
     });
 
     it('should resolve if server is ready', async () => {
-      const socketPath = SocketUtils.getSocketPath('testabc');
-      const server = new net.Server();
-      server.listen(socketPath);
+      const socketId = 'testabc';
+      const mockServer = new MockServer(socketId);
+      mockServer.listen();
 
-      const client = new SocketChannelClient('testabc');
+      const client = new SocketChannelClient(socketId);
       await expect(client.connect()).resolves.toBeUndefined();
 
       client.close();
-      server.close();
+      mockServer.close();
     });
   });
 
@@ -32,17 +30,14 @@ describe('SocketChannelClient', () => {
     });
 
     it('should send payload over socket', async () => {
-      const socketPath = SocketUtils.getSocketPath('testabc');
-      const server = new net.Server();
+      const socketId = 'testabc';
+      const mockServer = new MockServer(socketId);
 
-      let receivedData = null;
-      server.listen(socketPath);
-      server.on('connection', socket => {
-        socket.setEncoding('utf8');
-        socket.on('data', d => (receivedData = d));
-      });
+      let receivedData;
+      mockServer.listen();
+      mockServer.listenSocketDataEvent(d => (receivedData = d));
 
-      const client = new SocketChannelClient('testabc');
+      const client = new SocketChannelClient(socketId);
       await client.connect();
 
       const topic = 'mytopic';
@@ -54,7 +49,61 @@ describe('SocketChannelClient', () => {
       expect(receivedData).toEqual(clientDataJson);
 
       client.close();
-      server.close();
+      mockServer.close();
+    });
+  });
+
+  describe('listen', () => {
+    it('should make listeners to listen messages', async () => {
+      const socketId = 'testabc';
+      const mockServer = new MockServer(socketId);
+      mockServer.listen();
+
+      const client = new SocketChannelClient(socketId);
+      await client.connect();
+      await PromiseUtils.delay(0.01); // HACK
+
+      const sendingPayload = { a: 1, b: 'str' };
+      const topic = 'thisistopic';
+
+      let receivedPayload;
+      client.listen(topic, payload => (receivedPayload = payload));
+
+      mockServer.sendJsonToConnectedSocket({ topic, payload: sendingPayload });
+      await PromiseUtils.delay(0.01);
+
+      expect(receivedPayload).toEqual(sendingPayload);
+
+      client.close();
+      mockServer.close();
+    });
+  });
+
+  describe('unlisten', () => {
+    it('should make listeners to unlisten messages', async () => {
+      const socketId = 'testsocket';
+      const mockServer = new MockServer(socketId);
+      mockServer.listen();
+
+      const client = new SocketChannelClient(socketId);
+      await client.connect();
+      await PromiseUtils.delay(0.01); // HACK
+
+      const sendingPayload = { a: 1, b: { c: 0 } };
+      const topic = 'thisistopic';
+
+      let receivedPayload;
+      const listener = (payload: any) => (receivedPayload = payload);
+      client.listen(topic, listener);
+      client.unlisten(topic, listener);
+
+      mockServer.sendJsonToConnectedSocket({ topic, payload: sendingPayload });
+      await PromiseUtils.delay(0.01);
+
+      expect(receivedPayload).toBeUndefined();
+
+      client.close();
+      mockServer.close();
     });
   });
 });
