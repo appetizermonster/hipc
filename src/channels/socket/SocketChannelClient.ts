@@ -1,7 +1,7 @@
 import net from 'net';
 
-import ListMap from '../../../lib/ListMap';
-import RxUtils from '../../../lib/RxUtils';
+import ListMap from '../../lib/ListMap';
+import RxUtils from '../../lib/RxUtils';
 import { ClientTopicHandler, IChannelClient } from '../../types';
 import SocketUtils from './SocketUtils';
 
@@ -29,9 +29,9 @@ export default class SocketChannelClient implements IChannelClient {
       .toPromise();
 
     // Handshaking
-    this.socket.write('connection');
+    this.socket.write('hello');
     await RxUtils.observableFromEvent(this.socket, 'data')
-      .filter(data => data === 'connection_reply')
+      .filter(data => data === 'me-too')
       .take(1)
       .timeout(1000)
       .toPromise();

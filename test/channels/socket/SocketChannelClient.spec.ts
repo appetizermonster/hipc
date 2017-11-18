@@ -1,5 +1,5 @@
-import PromiseUtils from '../../../lib/PromiseUtils';
 import SocketChannelClient from '../../../src/channels/socket/SocketChannelClient';
+import PromiseUtils from '../../../src/lib/PromiseUtils';
 import MockServer from './MockServer';
 
 describe('SocketChannelClient', () => {
@@ -13,8 +13,7 @@ describe('SocketChannelClient', () => {
       const socketId = 'testabc';
       const mockServer = new MockServer(socketId);
       mockServer.listen(data => {
-        if (data === 'connection')
-          mockServer.sendToConnectedSocket('connection_reply');
+        if (data === 'hello') mockServer.sendToConnectedSocket('me-too');
       });
 
       const client = new SocketChannelClient(socketId);
@@ -38,8 +37,7 @@ describe('SocketChannelClient', () => {
 
       let receivedData;
       mockServer.listen(data => {
-        if (data === 'connection')
-          return mockServer.sendToConnectedSocket('connection_reply');
+        if (data === 'hello') return mockServer.sendToConnectedSocket('me-too');
         receivedData = data;
       });
 
@@ -64,8 +62,7 @@ describe('SocketChannelClient', () => {
       const socketId = 'testabc';
       const mockServer = new MockServer(socketId);
       mockServer.listen(data => {
-        if (data === 'connection')
-          return mockServer.sendToConnectedSocket('connection_reply');
+        if (data === 'hello') return mockServer.sendToConnectedSocket('me-too');
       });
 
       const client = new SocketChannelClient(socketId);
@@ -94,8 +91,7 @@ describe('SocketChannelClient', () => {
       const socketId = 'testsocket';
       const mockServer = new MockServer(socketId);
       mockServer.listen(data => {
-        if (data === 'connection')
-          return mockServer.sendToConnectedSocket('connection_reply');
+        if (data === 'hello') return mockServer.sendToConnectedSocket('me-too');
       });
 
       const client = new SocketChannelClient(socketId);
