@@ -1,34 +1,33 @@
 import net from 'net';
 
 import SocketUtils from '../../../src/channels/socket/SocketUtils';
+import JsonSocket from '../../../src/lib/JsonSocket';
 
-export default class MockServer {
+export default class MockJsonServer {
   private socketPath: string;
-  private encoding: string;
 
   private server: net.Server | null;
-  private connectedSocket: net.Socket | null;
+  private connectedSocket: JsonSocket | null;
   private socketDataEventHandler: Function | null;
 
-  public constructor(socketId: string, encoding: string = 'utf8') {
+  public constructor(socketId: string) {
     this.socketPath = SocketUtils.getSocketPath(socketId);
-    this.encoding = encoding;
 
     this.server = null;
     this.connectedSocket = null;
     this.socketDataEventHandler = null;
   }
 
-  public listen(eventHandler: (data: any) => void) {
+  public listen(eventHandler: (obj: any) => void) {
     this.server = new net.Server();
-    this.server.on('connection', this.onConnection.bind(this));
+    this.server.on('connection', this.onServerConnection.bind(this));
     this.server.listen(this.socketPath);
     this.socketDataEventHandler = eventHandler;
   }
 
-  public sendToConnectedSocket(data: string): void {
+  public sendToConnectedSocket(obj: any): void {
     if (!this.connectedSocket) throw new Error('no connected socket');
-    this.connectedSocket.write(data);
+    this.connectedSocket.send(obj);
   }
 
   public close() {
@@ -38,19 +37,20 @@ export default class MockServer {
     }
 
     if (this.connectedSocket) {
-      this.connectedSocket.destroy();
+      this.connectedSocket.close();
       this.connectedSocket = null;
     }
   }
 
-  private onConnection(socket: net.Socket) {
-    this.connectedSocket = socket;
-
-    socket.setEncoding(this.encoding);
-    socket.on('data', this.onSocketDataEvent.bind(this));
+  private onServerConnection(socket: net.Socket) {
+    const jsonSocket = new JsonSocket(socket);
+    this.connectedSocket = jsonSocket;
+    this.connectedSocket.on('message', this.onSocketMessage.bind(this));
   }
 
-  private onSocketDataEvent(data: any) {
-    if (this.socketDataEventHandler) this.socketDataEventHandler(data);
+  private onSocketMessage(obj: any) {
+    if (this.socketDataEventHandler) {
+      this.socketDataEventHandler(obj);
+    }
   }
 }

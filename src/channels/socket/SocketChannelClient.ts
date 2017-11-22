@@ -1,5 +1,6 @@
 import net from 'net';
 
+import JsonSocket from '../../lib/JsonSocket';
 import ListMap from '../../lib/ListMap';
 import RxUtils from '../../lib/RxUtils';
 import { ClientTopicHandler, IChannelClient } from '../../types';
@@ -7,7 +8,7 @@ import SocketUtils from './SocketUtils';
 
 export default class SocketChannelClient implements IChannelClient {
   private socketPath: string;
-  private socket: net.Socket | null = null;
+  private jsonSocket: JsonSocket | null = null;
   private listenerListMap: ListMap<string, ClientTopicHandler> = new ListMap();
 
   public constructor(socketId: string) {
@@ -15,41 +16,35 @@ export default class SocketChannelClient implements IChannelClient {
   }
 
   public async connect(): Promise<void> {
-    this.socket = new net.Socket();
-    this.socket.setEncoding('utf8');
-    this.socket.on('error', this.onSocketError.bind(this));
-    this.socket.connect(this.socketPath);
-
-    // Waiting for the connection
-    await RxUtils.observableFromEvent(this.socket, 'connect')
-      .take(1)
-      .timeout(1000)
-      .toPromise();
+    const socket = new net.Socket();
+    this.jsonSocket = new JsonSocket(socket);
+    await this.jsonSocket.connectIpc(this.socketPath);
 
     // Handshaking
-    this.socket.write('hello');
-    await RxUtils.observableFromEvent(this.socket, 'data')
-      .filter(data => data === 'me-too')
+    this.jsonSocket.send({ type: 'hello' });
+    await RxUtils.observableFromEvent(this.jsonSocket, 'message')
+      .filter(obj => obj.type === 'hello-reply')
       .take(1)
       .timeout(1000)
       .toPromise();
 
-    this.socket.on('data', this.onSocketData.bind(this));
+    this.jsonSocket.on('message', this.onSocketMessage.bind(this));
   }
 
   public close(): void {
-    if (this.socket) {
-      this.socket.end();
-      this.socket = null;
+    if (this.jsonSocket) {
+      this.jsonSocket.close();
+      this.jsonSocket = null;
     }
   }
 
   public send(topic: string, payload: {}): void {
-    if (!this.socket) throw new Error('not connected');
+    if (!this.jsonSocket) {
+      throw new Error("Socket isn't connected");
+    }
 
     const data = { topic, payload };
-    const json = JSON.stringify(data);
-    this.socket!.write(json);
+    this.jsonSocket.send({ type: 'data', data });
   }
 
   public listen(topic: string, handler: ClientTopicHandler): void {
@@ -60,20 +55,13 @@ export default class SocketChannelClient implements IChannelClient {
     this.listenerListMap.removeFromList(topic, handler);
   }
 
-  private onSocketError(e: any): void {
-    console.error(e);
-  }
-
-  private onSocketData(data: string): void {
-    const isJson = data && data.startsWith('{');
-    if (!isJson) return;
-
-    const obj = JSON.parse(data);
-    const { topic, payload } = obj;
-
-    const listeners = this.listenerListMap.getList(topic);
-    if (listeners) {
-      listeners.forEach(x => x(payload));
+  private onSocketMessage(obj: any): void {
+    if (obj.type === 'data') {
+      const { topic, payload } = obj.data;
+      const listeners = this.listenerListMap.getList(topic);
+      if (listeners) {
+        listeners.forEach(listener => listener(payload));
+      }
     }
   }
 }
