@@ -80,7 +80,7 @@ describe('JsonSocket', () => {
       expect(fn).toThrowError();
     });
 
-    it('should send json of the data', async () => {
+    it('should make json and write it to the socket', async () => {
       const mockSocket = wrapFunctionsWithMockFn(new MockSocket());
       const jsonSocket = new JsonSocket((mockSocket as any) as net.Socket);
       await jsonSocket.connectIpc('testipc');
@@ -92,7 +92,7 @@ describe('JsonSocket', () => {
       expect(mockSocket.getWrittenBuffer()).toEqual(expectedJson);
     });
 
-    it('should send json even if buffer is full', async () => {
+    it('should send json on drain event if buffer is full', async () => {
       const mockSocket = wrapFunctionsWithMockFn(new MockSocket());
       const jsonSocket = new JsonSocket((mockSocket as any) as net.Socket);
       await jsonSocket.connectIpc('testipc');
