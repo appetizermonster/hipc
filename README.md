@@ -1,7 +1,7 @@
-# hrpc
+# hipc
 
-[![Codecov](https://img.shields.io/codecov/c/github/appetizermonster/hrpc.svg)]()
+[![Codecov](https://img.shields.io/codecov/c/github/appetizermonster/hipc.svg)]()
 
-**hrpc** is a type-safe RPC library for Electron
+**hipc** is a type-safe IPC library for Electron
 
 WORK IN PROGRESS :)
