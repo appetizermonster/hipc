@@ -14,6 +14,10 @@ export default class MockSocket {
     setImmediate(() => this.emit('connect'));
   }
 
+  public end(): boolean {
+    return true;
+  }
+
   public setEncoding(encoding: string) {}
 
   public on(eventName: MockSocketEventName, listener: Function) {

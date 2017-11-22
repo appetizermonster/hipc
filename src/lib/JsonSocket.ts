@@ -38,6 +38,15 @@ export default class JsonSocket {
     this.isConnected = true;
   }
 
+  public close(): void {
+    if (!this.isConnected) {
+      throw new Error("Socket isn't connected");
+    }
+
+    this.socket.end();
+    this.isConnected = false;
+  }
+
   public on(eventName: JsonSocketEventName, listener: Function) {
     this.listenersByEvents.addToList(eventName, listener);
   }

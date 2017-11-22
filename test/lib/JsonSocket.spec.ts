@@ -30,6 +30,23 @@ describe('JsonSocket', () => {
     });
   });
 
+  describe('close', () => {
+    it('should throw error if not connected', () => {
+      const mockSocket = wrapFunctionsWithMockFn(new MockSocket());
+      const jsonSocket = new JsonSocket((mockSocket as any) as net.Socket);
+      const fn = () => jsonSocket.close();
+      expect(fn).toThrowError();
+    });
+
+    it("should call 'end' function on the socket", async () => {
+      const mockSocket = wrapFunctionsWithMockFn(new MockSocket());
+      const jsonSocket = new JsonSocket((mockSocket as any) as net.Socket);
+      await jsonSocket.connectIpc('testipc');
+      jsonSocket.close();
+      expect(mockSocket.end).toBeCalled();
+    });
+  });
+
   describe("on('message')", () => {
     it('should parse json and emit messages', async () => {
       const mockSocket = wrapFunctionsWithMockFn(new MockSocket());
