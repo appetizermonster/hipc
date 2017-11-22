@@ -37,21 +37,43 @@ describe('JsonSocket', () => {
   });
 
   describe("on('message')", () => {
-    it('should parse and emit json messages', async () => {
+    it('should parse json and emit messages', async () => {
       const mockSocket = wrapFunctionsWithMockFn(new MockSocket());
       const jsonSocket = new JsonSocket((mockSocket as any) as net.Socket);
       await jsonSocket.connectIpc('testipc');
 
       let receivedObject;
-      jsonSocket.on('message', (obj: any) => {
-        receivedObject = obj;
-      });
+      jsonSocket.on('message', (obj: any) => (receivedObject = obj));
 
-      const sendingData = { a: 1, b: 'test' };
-      const data = compositeData(sendingData);
+      const sendingObj = { a: 1, b: 'test' };
+      const data = compositeData(sendingObj);
       mockSocket.emit('data', data);
 
-      expect(receivedObject).toMatchObject(sendingData);
+      expect(receivedObject).toMatchObject(sendingObj);
+    });
+
+    it('should parse data which contains multiple json', async () => {
+      const mockSocket = wrapFunctionsWithMockFn(new MockSocket());
+      const jsonSocket = new JsonSocket((mockSocket as any) as net.Socket);
+      await jsonSocket.connectIpc('testipc');
+
+      const receivedObjects: any[] = [];
+      jsonSocket.on('message', (obj: any) => receivedObjects.push(obj));
+
+      const sendingObj1 = { a: 1 };
+      const sendingObj2 = { b: 'abc' };
+      const sendingObj3 = { a: 'abc', b: [0, 1, 2] };
+
+      const data1 = compositeData(sendingObj1);
+      const data2 = compositeData(sendingObj2);
+      const data3 = compositeData(sendingObj3);
+
+      mockSocket.emit('data', data1);
+      mockSocket.emit('data', data2 + data3);
+
+      expect(receivedObjects[0]).toMatchObject(sendingObj1);
+      expect(receivedObjects[1]).toMatchObject(sendingObj2);
+      expect(receivedObjects[2]).toMatchObject(sendingObj3);
     });
   });
 });
