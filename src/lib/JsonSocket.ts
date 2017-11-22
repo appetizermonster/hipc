@@ -81,9 +81,7 @@ export default class JsonSocket {
   private emit(eventName: JsonSocketEventName, ...args: any[]) {
     const listeners = this.listenersByEvents.getList(eventName);
     if (listeners) {
-      for (const listener of listeners) {
-        listener.apply(this, args);
-      }
+      listeners.forEach(listener => listener.apply(this, args));
     }
   }
 }
