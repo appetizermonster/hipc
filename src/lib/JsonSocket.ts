@@ -14,9 +14,8 @@ export function compositeData(obj: any): string {
 }
 
 export default class JsonSocket {
-  private socket: net.Socket;
+  private socket: net.Socket | null;
 
-  private isConnected: boolean = false;
   private listenersByEvents: ListMap<string, Function> = new ListMap();
   private jsonBuffer: JsonSocketBuffer = new JsonSocketBuffer();
 
@@ -26,25 +25,23 @@ export default class JsonSocket {
   }
 
   public async connectIpc(socketPath: string): Promise<void> {
-    this.socket.on('data', this.onSocketData.bind(this));
-    this.socket.on('error', this.onSocketError.bind(this));
-    this.socket.connect(socketPath);
+    this.socket!.on('data', this.onSocketData.bind(this));
+    this.socket!.on('error', this.onSocketError.bind(this));
+    this.socket!.connect(socketPath);
 
-    await RxUtils.observableFromEvent(this.socket, 'connect')
+    await RxUtils.observableFromEvent(this.socket!, 'connect')
       .take(1)
       .timeout(1000)
       .toPromise();
-
-    this.isConnected = true;
   }
 
   public close(): void {
-    if (!this.isConnected) {
-      throw new Error("Socket isn't connected");
+    if (!this.socket) {
+      throw new Error('Socket has been closed');
     }
 
     this.socket.end();
-    this.isConnected = false;
+    this.socket = null;
   }
 
   public on(eventName: JsonSocketEventName, listener: Function) {
@@ -56,8 +53,8 @@ export default class JsonSocket {
   }
 
   public send(obj: any) {
-    if (!this.isConnected) {
-      throw new Error("Socket isn't connected yet");
+    if (!this.socket) {
+      throw new Error('Socket has been closed');
     }
 
     const data = compositeData(obj);

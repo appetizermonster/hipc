@@ -34,6 +34,8 @@ describe('JsonSocket', () => {
     it('should throw error if not connected', () => {
       const mockSocket = wrapFunctionsWithMockFn(new MockSocket());
       const jsonSocket = new JsonSocket((mockSocket as any) as net.Socket);
+      jsonSocket.close();
+
       const fn = () => jsonSocket.close();
       expect(fn).toThrowError();
     });
@@ -89,14 +91,6 @@ describe('JsonSocket', () => {
   });
 
   describe('send', () => {
-    it('should throw error if not connected', () => {
-      const mockSocket = wrapFunctionsWithMockFn(new MockSocket());
-      const jsonSocket = new JsonSocket((mockSocket as any) as net.Socket);
-
-      const fn = () => jsonSocket.send({ a: 1 });
-      expect(fn).toThrowError();
-    });
-
     it('should make json and write it to the socket', async () => {
       const mockSocket = wrapFunctionsWithMockFn(new MockSocket());
       const jsonSocket = new JsonSocket((mockSocket as any) as net.Socket);
