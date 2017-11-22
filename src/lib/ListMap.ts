@@ -14,6 +14,10 @@ export default class ListMap<K, V> {
     list.push(element);
   }
 
+  public removeList(key: K) {
+    this.map.delete(key);
+  }
+
   public removeFromList(key: K, element: V) {
     const list = this.getList(key);
     if (!list) throw new Error("can't find the element");

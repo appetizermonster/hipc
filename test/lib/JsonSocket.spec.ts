@@ -1,15 +1,9 @@
 import net from 'net';
 
-import JsonSocket, { JSON_BUFFER_SEPARATOR } from '../../src/lib/JsonSocket';
+import JsonSocket, { compositeData } from '../../src/lib/JsonSocket';
+import PromiseUtils from '../../src/lib/PromiseUtils';
 import { wrapFunctionsWithMockFn } from '../MockUtils';
 import MockSocket from './MockSocket';
-
-function compositeData(obj: any) {
-  const json = JSON.stringify(obj);
-  const jsonLength = json.length;
-  const data = jsonLength.toString() + JSON_BUFFER_SEPARATOR + json;
-  return data;
-}
 
 describe('JsonSocket', () => {
   describe('constructor', () => {
@@ -74,6 +68,45 @@ describe('JsonSocket', () => {
       expect(receivedObjects[0]).toMatchObject(sendingObj1);
       expect(receivedObjects[1]).toMatchObject(sendingObj2);
       expect(receivedObjects[2]).toMatchObject(sendingObj3);
+    });
+  });
+
+  describe('send', () => {
+    it('should throw error if not connected', () => {
+      const mockSocket = wrapFunctionsWithMockFn(new MockSocket());
+      const jsonSocket = new JsonSocket((mockSocket as any) as net.Socket);
+
+      const fn = () => jsonSocket.send({ a: 1 });
+      expect(fn).toThrowError();
+    });
+
+    it('should send json of the data', async () => {
+      const mockSocket = wrapFunctionsWithMockFn(new MockSocket());
+      const jsonSocket = new JsonSocket((mockSocket as any) as net.Socket);
+      await jsonSocket.connectIpc('testipc');
+
+      const sendingObj = { a: 1 };
+      jsonSocket.send(sendingObj);
+
+      const expectedJson = compositeData(sendingObj);
+      expect(mockSocket.getWrittenBuffer()).toEqual(expectedJson);
+    });
+
+    it('should send json even if buffer is full', async () => {
+      const mockSocket = wrapFunctionsWithMockFn(new MockSocket());
+      const jsonSocket = new JsonSocket((mockSocket as any) as net.Socket);
+      await jsonSocket.connectIpc('testipc');
+
+      const sendingObj = { a: 1 };
+      mockSocket.setWriteable(false);
+      jsonSocket.send(sendingObj);
+
+      await PromiseUtils.delay(0.1);
+      mockSocket.setWriteable(true);
+      mockSocket.emit('drain');
+
+      const expectedJson = compositeData(sendingObj);
+      expect(mockSocket.getWrittenBuffer()).toEqual(expectedJson);
     });
   });
 });

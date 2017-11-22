@@ -3,11 +3,20 @@ import net from 'net';
 import ListMap from './ListMap';
 import RxUtils from './RxUtils';
 
+const JSON_BUFFER_SEPARATOR = '@';
+
 export type JsonSocketEventName = 'message';
-export const JSON_BUFFER_SEPARATOR = '@';
+
+export function compositeData(obj: any): string {
+  const json = JSON.stringify(obj);
+  const jsonLength = json.length;
+  return jsonLength.toString() + JSON_BUFFER_SEPARATOR + json;
+}
 
 export default class JsonSocket {
   private socket: net.Socket;
+
+  private isConnected: boolean = false;
   private listenersByEvents: ListMap<string, Function> = new ListMap();
   private jsonBuffer: JsonSocketBuffer = new JsonSocketBuffer();
 
@@ -25,6 +34,8 @@ export default class JsonSocket {
       .take(1)
       .timeout(1000)
       .toPromise();
+
+    this.isConnected = true;
   }
 
   public on(eventName: JsonSocketEventName, listener: Function) {
@@ -33,6 +44,18 @@ export default class JsonSocket {
 
   public removeListener(eventName: string, listener: Function) {
     this.listenersByEvents.removeFromList(eventName, listener);
+  }
+
+  public send(obj: any) {
+    if (!this.isConnected) {
+      throw new Error("Socket isn't connected yet");
+    }
+
+    const data = compositeData(obj);
+    const success = this.socket.write(data);
+    if (!success) {
+      this.socket.once('drain', () => this.send(obj));
+    }
   }
 
   private onSocketData(data: string): void {
