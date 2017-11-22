@@ -1,9 +1,13 @@
-import { EventEmitter } from 'events';
 import Rx from 'rxjs';
+
+export interface IEventEmitter {
+  on: Function;
+  removeListener: Function;
+}
 
 export default class RxUtils {
   public static observableFromEvent(
-    emitter: EventEmitter,
+    emitter: IEventEmitter,
     eventName: string
   ): Rx.Observable<any> {
     return Rx.Observable.create((observer: Rx.Observer<any>) => {

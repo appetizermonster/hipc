@@ -1,5 +1,6 @@
 import net from 'net';
 
+import JsonSocket from '../../lib/JsonSocket';
 import ListMap from '../../lib/ListMap';
 import { IChannelServer, ServerTopicHandler } from '../../types';
 import SocketUtils from './SocketUtils';
@@ -34,10 +35,11 @@ export default class SocketChannelServer implements IChannelServer {
   public unlisten(topic: string, handler: ServerTopicHandler): void {}
 
   private onServerConnection(socket: net.Socket) {
-    socket.setEncoding('utf8');
-    socket.on('data', (data: string) => {
-      if (data === 'hello') {
-        return socket.write('me-too');
+    const jsonSocket = new JsonSocket(socket);
+    jsonSocket.on('message', (obj: any) => {
+      const { type } = obj;
+      if (type === 'hello') {
+        jsonSocket.send({ type: 'hello-reply' });
       }
     });
   }

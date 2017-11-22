@@ -2,6 +2,7 @@ import net from 'net';
 
 import SocketChannelServer from '../../../src/channels/socket/SocketChannelServer';
 import SocketUtils from '../../../src/channels/socket/SocketUtils';
+import JsonSocket from '../../../src/lib/JsonSocket';
 import RxUtils from '../../../src/lib/RxUtils';
 
 describe('SocketChannelServer', () => {
@@ -34,29 +35,24 @@ describe('SocketChannelServer', () => {
       server.close();
     });
 
-    it('should make server to send me-too in handshaking', async () => {
+    it('should make server to handshake', async () => {
       const socketId = 'testchannel';
       const server = new SocketChannelServer(socketId);
       await server.start();
 
       const socketPath = SocketUtils.getSocketPath(socketId);
-      const socket = new net.Socket();
-      socket.connect(socketPath);
+      const jsonSocket = new JsonSocket(new net.Socket());
+      await jsonSocket.connectIpc(socketPath);
+      jsonSocket.send({ type: 'hello' });
 
-      await RxUtils.observableFromEvent(socket, 'connect')
+      const replyPromise = RxUtils.observableFromEvent(jsonSocket, 'message')
         .take(1)
         .timeout(100)
         .toPromise();
 
-      socket.setEncoding('utf8');
-      socket.write('hello');
-
-      const checkingReplyPromise = RxUtils.observableFromEvent(socket, 'data')
-        .filter(data => data === 'me-too')
-        .take(1)
-        .timeout(100)
-        .toPromise();
-      await expect(checkingReplyPromise).resolves.toBeDefined();
+      await expect(replyPromise).resolves.toMatchObject({
+        type: 'hello-reply'
+      });
     });
   });
 

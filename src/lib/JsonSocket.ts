@@ -22,11 +22,12 @@ export default class JsonSocket {
   public constructor(socket: net.Socket) {
     this.socket = socket;
     this.socket.setEncoding('utf-8');
+
+    this.socket.on('data', this.onSocketData.bind(this));
+    this.socket.on('error', this.onSocketError.bind(this));
   }
 
   public async connectIpc(socketPath: string): Promise<void> {
-    this.socket!.on('data', this.onSocketData.bind(this));
-    this.socket!.on('error', this.onSocketError.bind(this));
     this.socket!.connect(socketPath);
 
     await RxUtils.observableFromEvent(this.socket!, 'connect')
