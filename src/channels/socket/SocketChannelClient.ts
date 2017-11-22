@@ -7,13 +7,11 @@ import SocketUtils from './SocketUtils';
 
 export default class SocketChannelClient implements IChannelClient {
   private socketPath: string;
-  private socket: net.Socket | null;
-  private listenerListMap: ListMap<string, ClientTopicHandler>;
+  private socket: net.Socket | null = null;
+  private listenerListMap: ListMap<string, ClientTopicHandler> = new ListMap();
 
   public constructor(socketId: string) {
     this.socketPath = SocketUtils.getSocketPath(socketId);
-    this.socket = null;
-    this.listenerListMap = new ListMap();
   }
 
   public async connect(): Promise<void> {

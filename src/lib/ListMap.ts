@@ -1,8 +1,5 @@
 export default class ListMap<K, V> {
-  private map: Map<K, V[]>;
-  public constructor() {
-    this.map = new Map();
-  }
+  private map: Map<K, V[]> = new Map();
 
   public getList(key: K): V[] | undefined {
     return this.map.get(key);

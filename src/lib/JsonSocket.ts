@@ -8,15 +8,12 @@ export const JSON_BUFFER_SEPARATOR = '@';
 
 export default class JsonSocket {
   private socket: net.Socket;
-  private listenersByEvents: ListMap<string, Function>;
-  private jsonBuffer: JsonSocketBuffer;
+  private listenersByEvents: ListMap<string, Function> = new ListMap();
+  private jsonBuffer: JsonSocketBuffer = new JsonSocketBuffer();
 
   public constructor(socket: net.Socket) {
     this.socket = socket;
     this.socket.setEncoding('utf-8');
-
-    this.listenersByEvents = new ListMap();
-    this.jsonBuffer = new JsonSocketBuffer();
   }
 
   public async connectIpc(socketPath: string): Promise<void> {

@@ -8,14 +8,12 @@ import { ILocalChannelServer } from './types';
 
 export default class LocalChannelClient implements IChannelClient {
   private channelName: string;
-  private connectedServer: ILocalChannelServer | null;
-  private handlers: Map<string, ClientTopicHandler[]>;
+  private connectedServer: ILocalChannelServer | null = null;
+  private handlers: Map<string, ClientTopicHandler[]> = new Map();
   private sender: IChannelSender;
 
   public constructor(channelName: string) {
     this.channelName = channelName;
-    this.connectedServer = null;
-    this.handlers = new Map();
 
     const self = this;
     this.sender = {

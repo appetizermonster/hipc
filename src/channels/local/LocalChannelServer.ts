@@ -8,13 +8,11 @@ import { ILocalChannelServer } from './types';
 export default class LocalChannelServer
   implements IChannelServer, ILocalChannelServer {
   private channelName: string;
-  private handlersByTopic: Map<string, ServerTopicHandler[]>;
-  private isStarted: boolean;
+  private handlersByTopic: Map<string, ServerTopicHandler[]> = new Map();
+  private isStarted: boolean = false;
 
   public constructor(channelName: string) {
     this.channelName = channelName;
-    this.handlersByTopic = new Map();
-    this.isStarted = false;
   }
 
   public async start(): Promise<void> {

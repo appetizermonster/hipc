@@ -6,13 +6,11 @@ import SocketUtils from './SocketUtils';
 
 export default class SocketChannelServer implements IChannelServer {
   private socketPath: string;
-  private server: net.Server | null;
-  private listenerListMap: ListMap<string, ServerTopicHandler>;
+  private server: net.Server | null = null;
+  private listenerListMap: ListMap<string, ServerTopicHandler> = new ListMap();
 
   public constructor(socketId: string) {
     this.socketPath = SocketUtils.getSocketPath(socketId);
-    this.server = null;
-    this.listenerListMap = new ListMap();
   }
 
   public async start(): Promise<void> {
