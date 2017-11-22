@@ -1,12 +1,12 @@
 {
-  "name": "hrpc",
+  "name": "hipc",
   "version": "0.0.1",
-  "description": "A typesafe RPC library for electron; built with TypeScript",
+  "description": "A typesafe IPC library for electron; built with TypeScript",
   "main": "index.js",
   "author": "Heejin Lee <hjhome2000@naver.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/appetizermonster/hrpc.git"
+    "url": "https://github.com/appetizermonster/hipc.git"
   },
   "license": "MIT",
   "scripts": {
