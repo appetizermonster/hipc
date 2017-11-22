@@ -3,7 +3,9 @@ import net from 'net';
 import SocketChannelServer from '../../../src/channels/socket/SocketChannelServer';
 import SocketUtils from '../../../src/channels/socket/SocketUtils';
 import JsonSocket from '../../../src/lib/JsonSocket';
+import PromiseUtils from '../../../src/lib/PromiseUtils';
 import RxUtils from '../../../src/lib/RxUtils';
+import { IChannelSender } from '../../../src/types';
 
 describe('SocketChannelServer', () => {
   describe('start', () => {
@@ -13,16 +15,10 @@ describe('SocketChannelServer', () => {
       await server.start();
 
       const socketPath = SocketUtils.getSocketPath(socketId);
-      const socket = new net.Socket();
-      socket.connect(socketPath);
+      const jsonSocket = new JsonSocket(new net.Socket());
+      await jsonSocket.connectIpc(socketPath);
 
-      const connectionPromise = RxUtils.observableFromEvent(socket, 'connect')
-        .take(1)
-        .timeout(1000)
-        .toPromise();
-      await expect(connectionPromise).resolves.toBeUndefined();
-
-      socket.destroy();
+      jsonSocket.close();
       server.close();
     });
 
@@ -56,41 +52,59 @@ describe('SocketChannelServer', () => {
     });
   });
 
-  // describe('listen', () => {
-  //   it('should make listeners to listen messages', async () => {
-  //     const socketId = 'testnet';
-  //     const server = new SocketChannelServer(socketId);
-  //     await server.start();
+  describe('listen', () => {
+    it('should make listeners to listen messages', async () => {
+      const socketId = 'testnet';
+      const server = new SocketChannelServer(socketId);
+      await server.start();
 
-  //     const topic = 'topic';
-  //     const sendingPayload = { a: 1 };
-  //     let receivedPayload;
-  //     server.listen(topic, (sender, payload) => {
-  //       receivedPayload = payload;
-  //     });
+      const topic = 'test-topic';
+      const sendingPayload = { a: 1 };
+      let receivedPayload;
+      server.listen(topic, (sender, payload) => (receivedPayload = payload));
 
-  //     const socketPath = SocketUtils.getSocketPath(socketId);
-  //     const socket = new net.Socket();
-  //     socket.connect(socketPath);
+      const socketPath = SocketUtils.getSocketPath(socketId);
+      const jsonSocket = new JsonSocket(new net.Socket());
+      await jsonSocket.connectIpc(socketPath);
 
-  //     await RxUtils.observableFromEvent(socket, 'connect')
-  //       .take(1)
-  //       .timeout(100)
-  //       .toPromise();
+      const data = { topic, payload: sendingPayload };
+      jsonSocket.send({ type: 'hello' });
+      jsonSocket.send({ type: 'data', data });
+      await PromiseUtils.delay(0.1);
 
-  //     socket.write('hello');
-  //     socket.write(
-  //       JSON.stringify({
-  //         topic,
-  //         payload: sendingPayload
-  //       })
-  //     );
-  //     await PromiseUtils.delay(0.1);
+      expect(receivedPayload).toMatchObject(sendingPayload);
 
-  //     expect(receivedPayload).toMatchObject(sendingPayload);
+      jsonSocket.close();
+      server.close();
+    });
+  });
 
-  //     socket.destroy();
-  //     server.close();
-  //   });
-  // });
+  describe('unlisten', () => {
+    it('should make listeners to unlisten messages', async () => {
+      const socketId = 'testnet-unlisten';
+      const server = new SocketChannelServer(socketId);
+      await server.start();
+
+      let receivedPayload;
+      const topic = 'test-topic';
+      const listener = (sender: IChannelSender, payload: {}) =>
+        (receivedPayload = payload);
+      server.listen(topic, listener);
+      server.unlisten(topic, listener);
+
+      const socketPath = SocketUtils.getSocketPath(socketId);
+      const jsonSocket = new JsonSocket(new net.Socket());
+      await jsonSocket.connectIpc(socketPath);
+
+      const data = { topic, payload: {} };
+      jsonSocket.send({ type: 'hello' });
+      jsonSocket.send({ type: 'data', data });
+      await PromiseUtils.delay(0.1);
+
+      expect(receivedPayload).toBeUndefined();
+
+      jsonSocket.close();
+      server.close();
+    });
+  });
 });
