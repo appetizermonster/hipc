@@ -12,6 +12,7 @@
   "scripts": {
     "test": "jest",
     "tdd": "jest --watchAll",
+    "codecov": "codecov",
     "precommit": "lint-staged"
   },
   "lint-staged": {
