@@ -10,11 +10,10 @@ import {
 
 export default class IpcServer implements IIpcServer {
   private channel: IChannelServer;
-  private registries: IIpcServiceRegistry[];
+  private services: Map<string, IIpcService> = new Map();
 
   public constructor(channel: IChannelServer) {
     this.channel = channel;
-    this.registries = [];
   }
 
   public async start(): Promise<void> {
@@ -23,8 +22,8 @@ export default class IpcServer implements IIpcServer {
     this.channel.listen('#func', this.handleFunctionCall.bind(this));
   }
 
-  public addRegistry(serviceRegistry: IIpcServiceRegistry): void {
-    this.registries.push(serviceRegistry);
+  public addService(name: string, service: IIpcService): void {
+    this.services.set(name, service);
   }
 
   private async handleFunctionCall(
@@ -57,7 +56,7 @@ export default class IpcServer implements IIpcServer {
     funcName: string,
     args: any[]
   ): Promise<any> {
-    const service: any = this.findServiceFromRegistries(serviceName);
+    const service: any = this.services.get(serviceName);
     if (!service) {
       throw new Error(`Can't find a service: ${serviceName}`);
     }
@@ -69,16 +68,6 @@ export default class IpcServer implements IIpcServer {
 
     const returnValue = await func.apply(service, args);
     return returnValue;
-  }
-
-  private findServiceFromRegistries(serviceName: string): IIpcService | null {
-    for (const registry of this.registries) {
-      const s = registry.getService(serviceName);
-      if (s) {
-        return s;
-      }
-    }
-    return null;
   }
 
   private findFunctionFromService(

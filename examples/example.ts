@@ -14,14 +14,11 @@ class SimpleService implements ISimpleService {
 }
 
 async function testService() {
-  const serviceName = 'simpleservice';
-  const registry = rpc.createServiceRegistry();
-  registry.addService(serviceName, new SimpleService());
-
   // Server
   const channelName = 'testchannel';
+  const serviceName = 'simpleservice';
   const server = rpc.createServer(new LocalChannelServer(channelName));
-  server.addRegistry(registry);
+  server.addService(serviceName, new SimpleService());
   await server.start();
 
   // Client

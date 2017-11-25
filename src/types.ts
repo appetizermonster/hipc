@@ -22,7 +22,7 @@ export interface IIpcServiceRegistry {
 
 export interface IIpcServer {
   start(): Promise<void>;
-  addRegistry(serviceRegistry: IIpcServiceRegistry): void;
+  addService(name: string, service: IIpcService): void;
 }
 
 export interface IIpcClient {
