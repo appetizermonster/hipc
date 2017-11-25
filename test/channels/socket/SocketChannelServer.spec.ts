@@ -10,7 +10,7 @@ import { IChannelSender } from '../../../src/types';
 describe('SocketChannelServer', () => {
   describe('start', () => {
     it('should make ipc pipe', async () => {
-      const socketId = 'test';
+      const socketId = 'SocketChannelServer-start-ipcpipe';
       const server = new SocketChannelServer(socketId);
       await server.start();
 
@@ -23,7 +23,7 @@ describe('SocketChannelServer', () => {
     });
 
     it('should reject if server is already running', async () => {
-      const socketId = 'testipc';
+      const socketId = 'SocketChannelServer-start-reject';
       const server = new SocketChannelServer(socketId);
       await server.start();
       await expect(server.start()).rejects.toBeDefined();
@@ -32,7 +32,7 @@ describe('SocketChannelServer', () => {
     });
 
     it('should make server to handshake', async () => {
-      const socketId = 'testchannel';
+      const socketId = 'SocketChannelServer-start-handshake';
       const server = new SocketChannelServer(socketId);
       await server.start();
 
@@ -54,7 +54,7 @@ describe('SocketChannelServer', () => {
 
   describe('listen', () => {
     it('should make listeners to listen messages', async () => {
-      const socketId = 'testnet';
+      const socketId = 'SocketChannelServer-listen-listeners';
       const server = new SocketChannelServer(socketId);
       await server.start();
 
@@ -81,7 +81,7 @@ describe('SocketChannelServer', () => {
 
   describe('unlisten', () => {
     it('should make listeners to unlisten messages', async () => {
-      const socketId = 'testnet-unlisten';
+      const socketId = 'SocketChannelServer-unlisten-listeners';
       const server = new SocketChannelServer(socketId);
       await server.start();
 

@@ -5,12 +5,14 @@ import MockJsonServer from './MockJsonServer';
 describe('SocketChannelClient', () => {
   describe('connect', () => {
     it('should reject if server is not ready', async () => {
-      const client = new SocketChannelClient('test');
+      const client = new SocketChannelClient(
+        'SocketChannelClient-connect-notready'
+      );
       await expect(client.connect()).rejects.toBeDefined();
     });
 
     it('should resolve if server is ready', async () => {
-      const socketId = 'testabc';
+      const socketId = 'SocketChannelClient-connect-ready';
       const mockServer = new MockJsonServer(socketId);
       mockServer.listen((obj: any) => {
         if (obj.type === 'hello') {
@@ -28,13 +30,15 @@ describe('SocketChannelClient', () => {
 
   describe('send', () => {
     it("should throw error if it's not connected", () => {
-      const client = new SocketChannelClient('testabc');
+      const client = new SocketChannelClient(
+        'SocketChannelClient-send-not-connected'
+      );
       const fn = () => client.send('topic', {});
       expect(fn).toThrowError();
     });
 
     it('should send payload over socket', async () => {
-      const socketId = 'testabc123';
+      const socketId = 'SocketChannelClient-send-payload';
       const mockServer = new MockJsonServer(socketId);
 
       let receivedObj;
@@ -64,7 +68,7 @@ describe('SocketChannelClient', () => {
 
   describe('listen', () => {
     it('should make listeners to listen messages', async () => {
-      const socketId = 'testabc456';
+      const socketId = 'SocketChannelClient-listen-listeners';
       const mockServer = new MockJsonServer(socketId);
       mockServer.listen((obj: any) => {
         if (obj.type === 'hello') {
@@ -94,7 +98,7 @@ describe('SocketChannelClient', () => {
 
   describe('unlisten', () => {
     it('should make listeners to unlisten messages', async () => {
-      const socketId = 'testsocket';
+      const socketId = 'SocketChannelClient-unlisten-listeners';
       const mockServer = new MockJsonServer(socketId);
       mockServer.listen((obj: any) => {
         if (obj.type === 'hello') {
