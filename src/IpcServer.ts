@@ -1,15 +1,15 @@
 import {
   ICallPayload,
   IChannelServer,
-  IReplyPayload,
-  IRpcServer,
-  IRpcService,
-  IRpcServiceRegistry
+  IIpcServer,
+  IIpcService,
+  IIpcServiceRegistry,
+  IReplyPayload
 } from './types';
 
-export default class RpcServer implements IRpcServer {
+export default class IpcServer implements IIpcServer {
   private channel: IChannelServer;
-  private registries: IRpcServiceRegistry[];
+  private registries: IIpcServiceRegistry[];
 
   public constructor(channel: IChannelServer) {
     this.channel = channel;
@@ -22,7 +22,7 @@ export default class RpcServer implements IRpcServer {
     this.channel.listen('#func', this.handleFunctionCall.bind(this));
   }
 
-  public addRegistry(serviceRegistry: IRpcServiceRegistry): void {
+  public addRegistry(serviceRegistry: IIpcServiceRegistry): void {
     this.registries.push(serviceRegistry);
   }
 
@@ -64,7 +64,7 @@ export default class RpcServer implements IRpcServer {
     return returnValue;
   }
 
-  private findServiceFromRegistries(serviceName: string): IRpcService | null {
+  private findServiceFromRegistries(serviceName: string): IIpcService | null {
     for (const registry of this.registries) {
       const s = registry.getService(serviceName);
       if (s) return s;
@@ -73,7 +73,7 @@ export default class RpcServer implements IRpcServer {
   }
 
   private findFunctionFromService(
-    service: IRpcService,
+    service: IIpcService,
     funcName: string
   ): Function | undefined {
     return (service as any)[funcName];

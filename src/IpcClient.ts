@@ -1,16 +1,16 @@
-import RpcServiceProxyHandler from './RpcServiceProxyHandler';
-import { IChannelClient, IRpcClient, IRpcService } from './types';
+import IpcServiceProxyHandler from './IpcServiceProxyHandler';
+import { IChannelClient, IIpcClient, IIpcService } from './types';
 
-export interface IRpcClientOptions {
+export interface IIpcClientOptions {
   timeoutSeconds?: number;
 }
 
-export default class RpcClient implements IRpcClient {
+export default class IpcClient implements IIpcClient {
   private channel: IChannelClient;
-  private opts: IRpcClientOptions;
+  private opts: IIpcClientOptions;
   private isConnected: boolean;
 
-  public constructor(channel: IChannelClient, opts: IRpcClientOptions = {}) {
+  public constructor(channel: IChannelClient, opts: IIpcClientOptions = {}) {
     this.channel = channel;
     this.opts = opts;
     this.isConnected = false;
@@ -21,10 +21,10 @@ export default class RpcClient implements IRpcClient {
     this.isConnected = true;
   }
 
-  public getServiceProxy<T extends IRpcService>(serviceName: string): T {
+  public getServiceProxy<T extends IIpcService>(serviceName: string): T {
     if (!this.isConnected) throw new Error(`Client isn't connected yet`);
 
-    const proxyHandler = new RpcServiceProxyHandler(
+    const proxyHandler = new IpcServiceProxyHandler(
       this.channel,
       this.opts,
       serviceName

@@ -1,7 +1,7 @@
-import RpcClient from '../../src/RpcClient';
-import { IChannelClient, IRpcService } from '../../src/types';
+import IpcClient from '../../src/IpcClient';
+import { IChannelClient, IIpcService } from '../../src/types';
 
-interface IDummyService extends IRpcService {
+interface IDummyService extends IIpcService {
   dummyFunc(): void;
 }
 
@@ -11,11 +11,11 @@ function createMockChannel(): IChannelClient {
   } as any) as IChannelClient;
 }
 
-describe('RpcClient', () => {
+describe('IpcClient', () => {
   describe('connect', () => {
     it('should call `connect` on the channel', async () => {
       const mockChannel = createMockChannel();
-      const client = new RpcClient(mockChannel);
+      const client = new IpcClient(mockChannel);
       await client.connect();
       expect(mockChannel.connect).toBeCalled();
     });
@@ -24,14 +24,14 @@ describe('RpcClient', () => {
   describe('getServiceProxy', () => {
     it('should throw error if not connected', () => {
       const mockChannel = createMockChannel();
-      const client = new RpcClient(mockChannel);
+      const client = new IpcClient(mockChannel);
       const fn = () => client.getServiceProxy<IDummyService>('dummyService');
       expect(fn).toThrowError();
     });
 
     it('should return serviceProxy', async () => {
       const mockChannel = createMockChannel();
-      const client = new RpcClient(mockChannel);
+      const client = new IpcClient(mockChannel);
       await client.connect();
 
       const dummyService = client.getServiceProxy<IDummyService>(

@@ -1,6 +1,6 @@
 export type AsyncFunction = (...args: any[]) => Promise<any>;
 
-export interface IRpcService {}
+export interface IIpcService {}
 
 export interface ICallPayload {
   id: string;
@@ -15,19 +15,19 @@ export interface IReplyPayload {
   error: string | null;
 }
 
-export interface IRpcServiceRegistry {
-  addService(name: string, service: IRpcService): void;
-  getService(name: string): IRpcService | null;
+export interface IIpcServiceRegistry {
+  addService(name: string, service: IIpcService): void;
+  getService(name: string): IIpcService | null;
 }
 
-export interface IRpcServer {
+export interface IIpcServer {
   start(): Promise<void>;
-  addRegistry(serviceRegistry: IRpcServiceRegistry): void;
+  addRegistry(serviceRegistry: IIpcServiceRegistry): void;
 }
 
-export interface IRpcClient {
+export interface IIpcClient {
   connect(): Promise<void>;
-  getServiceProxy<T extends IRpcService>(serviceName: string): T;
+  getServiceProxy<T extends IIpcService>(serviceName: string): T;
 }
 
 export type ClientTopicHandler = (payload: {}) => void;

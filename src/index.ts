@@ -1,12 +1,11 @@
-import RpcClient from './RpcClient';
-import { IRpcClientOptions } from './RpcClient';
-import RpcServer from './RpcServer';
-import RpcServiceRegistry from './RpcServiceRegistry';
+import IpcClient, { IIpcClientOptions } from './IpcClient';
+import IpcServer from './IpcServer';
+import IpcServiceRegistry from './IpcServiceRegistry';
 import { IChannelClient, IChannelServer } from './types';
 
-export const createServiceRegistry = () => new RpcServiceRegistry();
-export const createServer = (channel: IChannelServer) => new RpcServer(channel);
+export const createServiceRegistry = () => new IpcServiceRegistry();
+export const createServer = (channel: IChannelServer) => new IpcServer(channel);
 export const createClient = (
   channel: IChannelClient,
-  opts: IRpcClientOptions = {}
-) => new RpcClient(channel, opts);
+  opts: IIpcClientOptions = {}
+) => new IpcClient(channel, opts);
