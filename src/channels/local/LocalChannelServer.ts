@@ -3,6 +3,7 @@ import {
   IChannelServer,
   ServerTopicHandler
 } from '../../types';
+import LocalChannelCentral from './LocalChannelCentral';
 import { ILocalChannelServer } from './types';
 
 export default class LocalChannelServer
@@ -19,6 +20,7 @@ export default class LocalChannelServer
     if (this.isStarted) {
       throw new Error('Already started');
     }
+    LocalChannelCentral.addServer(this.channelName, this);
     this.isStarted = true;
   }
 
