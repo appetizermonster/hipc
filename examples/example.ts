@@ -1,8 +1,9 @@
-import { LocalChannelClient, LocalChannelServer } from './channels/local';
-import * as rpc from './index';
-import { IRpcService } from './types';
+import * as rpc from '../src';
+import LocalChannelClient from '../src/channels/local/LocalChannelClient';
+import LocalChannelServer from '../src/channels/local/LocalChannelServer';
+import { IIpcService } from '../src/types';
 
-interface ISimpleService extends IRpcService {
+interface ISimpleService extends IIpcService {
   log(message: string): Promise<void>;
 }
 
@@ -13,23 +14,24 @@ class SimpleService implements ISimpleService {
 }
 
 async function testService() {
-  console.log(rpc);
+  const serviceName = 'simpleservice';
   const registry = rpc.createServiceRegistry();
-  registry.addService('simpleService', new SimpleService());
+  registry.addService(serviceName, new SimpleService());
 
   // Server
-  const server = rpc.createServer(new LocalChannelServer());
+  const channelName = 'testchannel';
+  const server = rpc.createServer(new LocalChannelServer(channelName));
   server.addRegistry(registry);
   await server.start();
 
   // Client
-  const client0 = rpc.createClient(new LocalChannelClient());
-  const client1 = rpc.createClient(new LocalChannelClient());
+  const client0 = rpc.createClient(new LocalChannelClient(channelName));
+  const client1 = rpc.createClient(new LocalChannelClient(channelName));
   await client0.connect();
   await client1.connect();
 
-  const service0 = client0.getServiceProxy<ISimpleService>('simpleService');
-  const service1 = client1.getServiceProxy<ISimpleService>('simpleService');
+  const service0 = client0.getServiceProxy<ISimpleService>(serviceName);
+  const service1 = client1.getServiceProxy<ISimpleService>(serviceName);
   await service0.log('hello, world');
   await service0.log('this is second chance');
   await service1.log('this is service1');
