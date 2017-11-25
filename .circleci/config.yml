@@ -27,7 +27,11 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-        
+
+      # run static analysis
+      - run: yarn type-check
+      - run: yarn lint
+      
       # run tests!
       - run: yarn test --coverage
       - run: yarn codecov
