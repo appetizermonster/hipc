@@ -1,5 +1,6 @@
 import {
   ICallPayload,
+  IChannelSender,
   IChannelServer,
   IIpcServer,
   IIpcService,
@@ -26,7 +27,10 @@ export default class IpcServer implements IIpcServer {
     this.registries.push(serviceRegistry);
   }
 
-  private async handleFunctionCall(payload: {}): Promise<void> {
+  private async handleFunctionCall(
+    sender: IChannelSender,
+    payload: {}
+  ): Promise<void> {
     const funcPayload = payload as ICallPayload;
     const replyPayload: IReplyPayload = {
       id: funcPayload.id,
@@ -45,7 +49,7 @@ export default class IpcServer implements IIpcServer {
       replyPayload.error = e.toString();
     }
 
-    this.channel.send('#func-reply', replyPayload);
+    sender.send('#func-reply', replyPayload);
   }
 
   private async callFunction(
