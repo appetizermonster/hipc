@@ -1,13 +1,13 @@
 import uuid from 'uuid/v4';
 
 import { IIpcClientOptions } from './IpcClient';
+import RxUtils from './lib/RxUtils';
 import {
   AsyncFunction,
   ICallPayload,
   IChannelClient,
   IReplyPayload
 } from './types';
-import * as utils from './utils';
 
 export default class IpcServiceProxyHandler implements ProxyHandler<{}> {
   private channel: IChannelClient;
@@ -17,8 +17,8 @@ export default class IpcServiceProxyHandler implements ProxyHandler<{}> {
 
   public constructor(
     channel: IChannelClient,
-    opts: IIpcClientOptions,
-    serviceName: string
+    serviceName: string,
+    opts: IIpcClientOptions = {}
   ) {
     this.channel = channel;
     this.opts = opts;
@@ -49,7 +49,7 @@ export default class IpcServiceProxyHandler implements ProxyHandler<{}> {
       };
       channel.send('#func', funcPayload);
 
-      const observable = utils.observableFromChannel<IReplyPayload>(
+      const observable = RxUtils.observableFromChannelClient<IReplyPayload>(
         channel,
         '#func-reply'
       );
@@ -59,7 +59,9 @@ export default class IpcServiceProxyHandler implements ProxyHandler<{}> {
         .timeout(timeoutSec * 1000)
         .take(1)
         .toPromise();
-      if (replyPayload.error) throw new Error(replyPayload.error);
+      if (replyPayload.error) {
+        throw new Error(replyPayload.error);
+      }
       return replyPayload.returnValue;
     };
     return proxyFunc;

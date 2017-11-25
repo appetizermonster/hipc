@@ -54,11 +54,14 @@ export default class IpcServer implements IIpcServer {
     args: any[]
   ): Promise<any> {
     const service: any = this.findServiceFromRegistries(serviceName);
-    if (!service) throw new Error(`Can't find a service: ${serviceName}`);
+    if (!service) {
+      throw new Error(`Can't find a service: ${serviceName}`);
+    }
 
     const func = this.findFunctionFromService(service, funcName);
-    if (!func)
+    if (!func) {
       throw new Error(`Can't find a function in ${serviceName}: ${funcName}`);
+    }
 
     const returnValue = await func.apply(service, args);
     return returnValue;
@@ -67,7 +70,9 @@ export default class IpcServer implements IIpcServer {
   private findServiceFromRegistries(serviceName: string): IIpcService | null {
     for (const registry of this.registries) {
       const s = registry.getService(serviceName);
-      if (s) return s;
+      if (s) {
+        return s;
+      }
     }
     return null;
   }

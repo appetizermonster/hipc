@@ -28,7 +28,9 @@ export default class SocketChannelServer implements IChannelServer {
   }
 
   public async start(): Promise<void> {
-    if (this.server) throw new Error('Server is already running');
+    if (this.server) {
+      throw new Error('Server is already running');
+    }
     this.server = new net.Server();
     this.server.listen(this.socketPath);
     this.server.on('connection', this.onServerConnection.bind(this));

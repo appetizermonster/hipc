@@ -13,7 +13,9 @@ export default class IpcServiceRegistry implements IIpcServiceRegistry {
 
   public getService(name: string): IIpcService | null {
     const service = this.services.get(name);
-    if (!service) return null;
+    if (!service) {
+      return null;
+    }
     return service;
   }
 }

@@ -22,22 +22,27 @@ export default class LocalChannelClient implements IChannelClient {
   }
 
   public async connect(): Promise<void> {
-    if (!LocalChannelCentral.isServerRunning(this.channelName))
+    if (!LocalChannelCentral.isServerRunning(this.channelName)) {
       throw new Error('Cannot find a server');
+    }
 
     this.connectedServer = LocalChannelCentral.getServer(this.channelName);
   }
 
   public send(topic: string, payload: {}): void {
     const server = this.connectedServer;
-    if (!server) throw new Error('Not connected');
+    if (!server) {
+      throw new Error('Not connected');
+    }
 
     server.emit(topic, this.sender, payload);
   }
 
   public listen(topic: string, handler: ClientTopicHandler): void {
     const server = this.connectedServer;
-    if (!server) throw new Error('Not connected');
+    if (!server) {
+      throw new Error('Not connected');
+    }
 
     let handlers = this.handlers.get(topic);
     if (!handlers) {
@@ -49,20 +54,28 @@ export default class LocalChannelClient implements IChannelClient {
   }
 
   public unlisten(topic: string, handler: ClientTopicHandler): void {
-    if (!this.connectedServer) throw new Error('Not connected');
+    if (!this.connectedServer) {
+      throw new Error('Not connected');
+    }
 
     const handlers = this.handlers.get(topic);
-    if (!handlers) return;
+    if (!handlers) {
+      return;
+    }
 
     const idx = handlers.indexOf(handler);
-    if (idx < 0) return;
+    if (idx < 0) {
+      return;
+    }
 
     handlers.splice(idx, 1);
   }
 
   private emit(topic: string, payload: {}): void {
     const handlers = this.handlers.get(topic);
-    if (!handlers) return;
+    if (!handlers) {
+      return;
+    }
 
     for (const handler of handlers) {
       handler(payload);

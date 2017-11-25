@@ -16,7 +16,9 @@ export default class LocalChannelServer
   }
 
   public async start(): Promise<void> {
-    if (this.isStarted) throw new Error('Already started');
+    if (this.isStarted) {
+      throw new Error('Already started');
+    }
     this.isStarted = true;
   }
 
@@ -31,16 +33,22 @@ export default class LocalChannelServer
 
   public unlisten(topic: string, handler: ServerTopicHandler): void {
     const handlers = this.handlersByTopic.get(topic);
-    if (!handlers) return;
+    if (!handlers) {
+      return;
+    }
 
     const idx = handlers.indexOf(handler);
-    if (idx < 0) return;
+    if (idx < 0) {
+      return;
+    }
     handlers.splice(idx, 1);
   }
 
   public emit(topic: string, sender: IChannelSender, payload: {}): void {
     const handlers = this.handlersByTopic.get(topic);
-    if (!handlers) return;
+    if (!handlers) {
+      return;
+    }
 
     for (const handler of handlers) {
       handler(sender, payload);

@@ -22,12 +22,14 @@ export default class IpcClient implements IIpcClient {
   }
 
   public getServiceProxy<T extends IIpcService>(serviceName: string): T {
-    if (!this.isConnected) throw new Error(`Client isn't connected yet`);
+    if (!this.isConnected) {
+      throw new Error(`Client isn't connected yet`);
+    }
 
     const proxyHandler = new IpcServiceProxyHandler(
       this.channel,
-      this.opts,
-      serviceName
+      serviceName,
+      this.opts
     );
     return (new Proxy({}, proxyHandler) as any) as T;
   }

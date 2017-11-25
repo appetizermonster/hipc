@@ -11,7 +11,9 @@ export default class LocalChannelCentral {
   }
 
   public static getServer(channelName: string): ILocalChannelServer | null {
-    if (!runningServers.has(channelName)) return null;
+    if (!runningServers.has(channelName)) {
+      return null;
+    }
     return runningServers.get(channelName) as ILocalChannelServer;
   }
 

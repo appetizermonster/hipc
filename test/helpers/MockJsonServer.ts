@@ -26,7 +26,9 @@ export default class MockJsonServer {
   }
 
   public sendToConnectedSocket(obj: any): void {
-    if (!this.connectedSocket) throw new Error('no connected socket');
+    if (!this.connectedSocket) {
+      throw new Error('no connected socket');
+    }
     this.connectedSocket.send(obj);
   }
 

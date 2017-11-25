@@ -20,10 +20,14 @@ export default class ListMap<K, V> {
 
   public removeFromList(key: K, element: V) {
     const list = this.getList(key);
-    if (!list) throw new Error("can't find the element");
+    if (!list) {
+      throw new Error("can't find the element");
+    }
 
     const idx = list.indexOf(element);
-    if (idx < 0) throw new Error("can't find the element");
+    if (idx < 0) {
+      throw new Error("can't find the element");
+    }
 
     list.splice(idx, 1);
   }
