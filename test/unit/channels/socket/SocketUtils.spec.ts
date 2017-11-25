@@ -1,4 +1,4 @@
-import SocketUtils from '../../../src/channels/socket/SocketUtils';
+import SocketUtils from '../../../../src/channels/socket/SocketUtils';
 
 describe('SocketUtils', () => {
   describe('getSocketPath', () => {

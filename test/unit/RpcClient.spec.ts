@@ -1,5 +1,5 @@
-import RpcClient from '../src/RpcClient';
-import { IChannelClient, IRpcService } from '../src/types';
+import RpcClient from '../../src/RpcClient';
+import { IChannelClient, IRpcService } from '../../src/types';
 
 interface IDummyService extends IRpcService {
   dummyFunc(): void;

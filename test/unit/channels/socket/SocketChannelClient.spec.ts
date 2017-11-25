@@ -1,6 +1,6 @@
-import SocketChannelClient from '../../../src/channels/socket/SocketChannelClient';
-import PromiseUtils from '../../../src/lib/PromiseUtils';
-import MockJsonServer from './MockJsonServer';
+import SocketChannelClient from '../../../../src/channels/socket/SocketChannelClient';
+import PromiseUtils from '../../../../src/lib/PromiseUtils';
+import MockJsonServer from '../../../helpers/MockJsonServer';
 
 describe('SocketChannelClient', () => {
   describe('connect', () => {

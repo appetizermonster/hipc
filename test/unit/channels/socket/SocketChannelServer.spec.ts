@@ -1,11 +1,11 @@
 import net from 'net';
 
-import SocketChannelServer from '../../../src/channels/socket/SocketChannelServer';
-import SocketUtils from '../../../src/channels/socket/SocketUtils';
-import JsonSocket from '../../../src/lib/JsonSocket';
-import PromiseUtils from '../../../src/lib/PromiseUtils';
-import RxUtils from '../../../src/lib/RxUtils';
-import { IChannelSender } from '../../../src/types';
+import SocketChannelServer from '../../../../src/channels/socket/SocketChannelServer';
+import SocketUtils from '../../../../src/channels/socket/SocketUtils';
+import JsonSocket from '../../../../src/lib/JsonSocket';
+import PromiseUtils from '../../../../src/lib/PromiseUtils';
+import RxUtils from '../../../../src/lib/RxUtils';
+import { IChannelSender } from '../../../../src/types';
 
 describe('SocketChannelServer', () => {
   describe('start', () => {

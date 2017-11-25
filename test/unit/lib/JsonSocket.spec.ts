@@ -1,9 +1,9 @@
 import net from 'net';
 
-import JsonSocket, { compositeData } from '../../src/lib/JsonSocket';
-import PromiseUtils from '../../src/lib/PromiseUtils';
-import { wrapFunctionsWithMockFn } from '../MockUtils';
-import MockSocket from './MockSocket';
+import JsonSocket, { compositeData } from '../../../src/lib/JsonSocket';
+import PromiseUtils from '../../../src/lib/PromiseUtils';
+import MockSocket from '../../helpers/MockSocket';
+import { wrapFunctionsWithMockFn } from '../../helpers/MockUtils';
 
 describe('JsonSocket', () => {
   describe('constructor', () => {
