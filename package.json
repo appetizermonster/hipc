@@ -15,7 +15,8 @@
     "codecov": "codecov",
     "precommit": "lint-staged",
     "lint": "tslint --project .",
-    "type-check": "tsc --noEmit"
+    "compile-check": "tsc --noEmit",
+    "static-check": "yarn lint && yarn compile-check"
   },
   "lint-staged": {
     "*.{ts,tsx}": "tslint"
