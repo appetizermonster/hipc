@@ -11,9 +11,9 @@ import {
 
 export default class IpcServiceProxyHandler implements ProxyHandler<{}> {
   private channel: IChannelClient;
-  private opts: IIpcClientOptions;
   private serviceName: string;
-  private proxyFuncs: Map<string, AsyncFunction>;
+  private opts: IIpcClientOptions;
+  private proxyFuncs: Map<string, AsyncFunction> = new Map();
 
   public constructor(
     channel: IChannelClient,
@@ -21,9 +21,8 @@ export default class IpcServiceProxyHandler implements ProxyHandler<{}> {
     opts: IIpcClientOptions = {}
   ) {
     this.channel = channel;
-    this.opts = opts;
     this.serviceName = serviceName;
-    this.proxyFuncs = new Map();
+    this.opts = opts;
   }
 
   public get(target: {}, key: any, receiver: any): any {
