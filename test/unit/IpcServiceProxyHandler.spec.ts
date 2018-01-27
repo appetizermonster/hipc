@@ -1,8 +1,8 @@
-import LocalChannelClient from '../../src/channels/local/LocalChannelClient';
-import LocalChannelServer from '../../src/channels/local/LocalChannelServer';
-import IpcServer from '../../src/IpcServer';
-import IpcServiceProxyHandler from '../../src/IpcServiceProxyHandler';
-import { AsyncFunction, IIpcService } from '../../src/types';
+import LocalChannelClient from 'channels/local/LocalChannelClient';
+import LocalChannelServer from 'channels/local/LocalChannelServer';
+import IpcServer from 'IpcServer';
+import IpcServiceProxyHandler from 'IpcServiceProxyHandler';
+import { AsyncFunction, IIpcService } from 'types';
 import MockChannelClient from '../helpers/MockChannelClient';
 import { wrapFunctionsWithMockFn } from '../helpers/MockUtils';
 

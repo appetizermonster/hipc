@@ -1,6 +1,6 @@
-import LocalChannelCentral from '../../../../src/channels/local/LocalChannelCentral';
-import LocalChannelClient from '../../../../src/channels/local/LocalChannelClient';
-import { ILocalChannelServer } from '../../../../src/channels/local/types';
+import LocalChannelCentral from 'channels/local/LocalChannelCentral';
+import LocalChannelClient from 'channels/local/LocalChannelClient';
+import { ILocalChannelServer } from 'channels/local/types';
 
 describe('LocalChannelClient', () => {
   function registerEchoServer(channelName: string) {

@@ -1,5 +1,5 @@
+import ListMap from 'lib/ListMap';
 import { setImmediate } from 'timers';
-import ListMap from '../../src/lib/ListMap';
 
 export type MockSocketEventName = 'connect' | 'data' | 'drain';
 

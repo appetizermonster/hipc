@@ -1,7 +1,7 @@
 import net from 'net';
 
-import ListMap from './ListMap';
-import RxUtils from './RxUtils';
+import ListMap from 'lib/ListMap';
+import RxUtils from 'lib/RxUtils';
 
 const JSON_BUFFER_SEPARATOR = '@';
 

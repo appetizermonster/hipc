@@ -1,6 +1,6 @@
 import Rx from 'rxjs';
 
-import { IChannelClient } from '../types';
+import { IChannelClient } from 'types';
 
 export interface IEventEmitter {
   on: Function;

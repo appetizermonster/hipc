@@ -1,12 +1,8 @@
 import net from 'net';
 
-import JsonSocket from '../../lib/JsonSocket';
-import ListMap from '../../lib/ListMap';
-import {
-  IChannelSender,
-  IChannelServer,
-  ServerTopicHandler
-} from '../../types';
+import ListMap from 'lib/ListMap';
+import { IChannelSender, IChannelServer, ServerTopicHandler } from 'types';
+import JsonSocket from './JsonSocket';
 import SocketUtils from './SocketUtils';
 
 function createSenderFromJsonSocket(jsonSocket: JsonSocket): IChannelSender {

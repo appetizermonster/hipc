@@ -1,8 +1,4 @@
-import {
-  IChannelSender,
-  IChannelServer,
-  ServerTopicHandler
-} from '../../types';
+import { IChannelSender, IChannelServer, ServerTopicHandler } from 'types';
 import LocalChannelCentral from './LocalChannelCentral';
 import { ILocalChannelServer } from './types';
 

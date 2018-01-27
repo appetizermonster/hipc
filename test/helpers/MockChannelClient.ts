@@ -1,4 +1,4 @@
-import { IChannelClient } from '../../src/types';
+import { IChannelClient } from 'types';
 
 export default class MockChannelClient implements IChannelClient {
   public async connect(): Promise<void> {}

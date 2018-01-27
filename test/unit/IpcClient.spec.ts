@@ -1,5 +1,5 @@
-import IpcClient from '../../src/IpcClient';
-import { IIpcService } from '../../src/types';
+import IpcClient from 'IpcClient';
+import { IIpcService } from 'types';
 import MockChannelClient from '../helpers/MockChannelClient';
 import { wrapFunctionsWithMockFn } from '../helpers/MockUtils';
 

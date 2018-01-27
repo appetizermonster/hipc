@@ -1,9 +1,9 @@
 import net from 'net';
 
-import JsonSocket from '../../lib/JsonSocket';
-import ListMap from '../../lib/ListMap';
-import RxUtils from '../../lib/RxUtils';
-import { ClientTopicHandler, IChannelClient } from '../../types';
+import ListMap from 'lib/ListMap';
+import RxUtils from 'lib/RxUtils';
+import { ClientTopicHandler, IChannelClient } from 'types';
+import JsonSocket from './JsonSocket';
 import SocketUtils from './SocketUtils';
 
 export default class SocketChannelClient implements IChannelClient {

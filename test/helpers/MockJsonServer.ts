@@ -1,7 +1,7 @@
 import net from 'net';
 
-import SocketUtils from '../../src/channels/socket/SocketUtils';
-import JsonSocket from '../../src/lib/JsonSocket';
+import JsonSocket from 'channels/socket/JsonSocket';
+import SocketUtils from 'channels/socket/SocketUtils';
 
 export default class MockJsonServer {
   private socketPath: string;
