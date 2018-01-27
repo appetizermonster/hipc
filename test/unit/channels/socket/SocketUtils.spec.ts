@@ -8,9 +8,11 @@ describe('SocketUtils', () => {
       oldPlatform = process.platform;
     });
 
-    afterEach(() => {
-      process.platform = oldPlatform;
-    });
+    function setProcessPlatform(platform: NodeJS.Platform) {
+      Object.defineProperty(process, 'platform', { value: platform });
+    }
+
+    afterEach(() => setProcessPlatform(oldPlatform));
 
     it('should return type of string', () => {
       const socketPath = SocketUtils.getSocketPath('abc');
@@ -18,7 +20,7 @@ describe('SocketUtils', () => {
     });
 
     it('should return proper socket path on Windows', () => {
-      process.platform = 'win32';
+      setProcessPlatform('win32');
 
       const id = 'abcd';
       const socketPath = SocketUtils.getSocketPath(id);
@@ -26,7 +28,7 @@ describe('SocketUtils', () => {
     });
 
     it('should return unix socket path on linux', () => {
-      process.platform = 'linux';
+      setProcessPlatform('linux');
 
       const id = 'abcd';
       const socketPath = SocketUtils.getSocketPath(id);
@@ -34,7 +36,7 @@ describe('SocketUtils', () => {
     });
 
     it('should return unix socket path on macOS', () => {
-      process.platform = 'darwin';
+      setProcessPlatform('darwin');
 
       const id = 'abcd';
       const socketPath = SocketUtils.getSocketPath(id);
