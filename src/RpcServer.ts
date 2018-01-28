@@ -2,15 +2,15 @@ import {
   ICallPayload,
   IChannelSender,
   IChannelServer,
-  IIpcServer,
-  IIpcService,
-  IIpcServiceRegistry,
-  IReplyPayload
+  IReplyPayload,
+  IRpcServer,
+  IRpcService,
+  IRpcServiceRegistry
 } from './types';
 
-export default class IpcServer implements IIpcServer {
+export default class RpcServer implements IRpcServer {
   private channel: IChannelServer;
-  private services: Map<string, IIpcService> = new Map();
+  private services: Map<string, IRpcService> = new Map();
 
   public constructor(channel: IChannelServer) {
     this.channel = channel;
@@ -22,7 +22,7 @@ export default class IpcServer implements IIpcServer {
     this.channel.listen('#func', this.handleFunctionCall.bind(this));
   }
 
-  public addService(name: string, service: IIpcService): void {
+  public addService(name: string, service: IRpcService): void {
     this.services.set(name, service);
   }
 
@@ -71,7 +71,7 @@ export default class IpcServer implements IIpcServer {
   }
 
   private findFunctionFromService(
-    service: IIpcService,
+    service: IRpcService,
     funcName: string
   ): Function | undefined {
     return (service as any)[funcName];

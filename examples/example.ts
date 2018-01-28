@@ -1,9 +1,9 @@
 import * as rpc from '../src';
 import LocalChannelClient from '../src/channels/local/LocalChannelClient';
 import LocalChannelServer from '../src/channels/local/LocalChannelServer';
-import { IIpcService } from '../src/types';
+import { IRpcService } from '../src/types';
 
-interface ISimpleService extends IIpcService {
+interface ISimpleService extends IRpcService {
   log(message: string): Promise<void>;
 }
 

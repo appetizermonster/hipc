@@ -1,7 +1,7 @@
 import uuid from 'uuid/v4';
 
-import { IIpcClientOptions } from './IpcClient';
 import RxUtils from './lib/RxUtils';
+import { IRpcClientOptions } from './RpcClient';
 import {
   AsyncFunction,
   ICallPayload,
@@ -9,16 +9,16 @@ import {
   IReplyPayload
 } from './types';
 
-export default class IpcServiceProxyHandler implements ProxyHandler<{}> {
+export default class RpcServiceProxyHandler implements ProxyHandler<{}> {
   private channel: IChannelClient;
   private serviceName: string;
-  private opts: IIpcClientOptions;
+  private opts: IRpcClientOptions;
   private proxyFuncs: Map<string, AsyncFunction> = new Map();
 
   public constructor(
     channel: IChannelClient,
     serviceName: string,
-    opts: IIpcClientOptions = {}
+    opts: IRpcClientOptions = {}
   ) {
     this.channel = channel;
     this.serviceName = serviceName;

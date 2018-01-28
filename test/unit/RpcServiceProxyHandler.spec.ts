@@ -1,12 +1,12 @@
 import LocalChannelClient from 'channels/local/LocalChannelClient';
 import LocalChannelServer from 'channels/local/LocalChannelServer';
-import IpcServer from 'IpcServer';
-import IpcServiceProxyHandler from 'IpcServiceProxyHandler';
-import { AsyncFunction, IIpcService } from 'types';
+import RpcServer from 'RpcServer';
+import RpcServiceProxyHandler from 'RpcServiceProxyHandler';
+import { AsyncFunction, IRpcService } from 'types';
 import MockChannelClient from '../helpers/MockChannelClient';
 import { wrapFunctionsWithMockFn } from '../helpers/MockUtils';
 
-class DummyService implements IIpcService {
+class DummyService implements IRpcService {
   public async add(a: number, b: number): Promise<number> {
     return a + b;
   }
@@ -15,11 +15,11 @@ class DummyService implements IIpcService {
   }
 }
 
-describe('IpcServiceProxyHandler', () => {
+describe('RpcServiceProxyHandler', () => {
   describe('#get', () => {
     it('should return proxy function', () => {
       const mockChannel = wrapFunctionsWithMockFn(new MockChannelClient());
-      const proxyHandler = new IpcServiceProxyHandler(mockChannel, 'service');
+      const proxyHandler = new RpcServiceProxyHandler(mockChannel, 'service');
       const proxyFunc = proxyHandler.get({}, 'testfunc', {});
       expect(proxyFunc).toBeInstanceOf(Function);
     });
@@ -31,7 +31,7 @@ describe('IpcServiceProxyHandler', () => {
       const serviceName = 'service';
 
       const channelServer = new LocalChannelServer(channelName);
-      const server = new IpcServer(channelServer);
+      const server = new RpcServer(channelServer);
       const service = new DummyService();
       server.addService(serviceName, service);
       server.start();
@@ -39,7 +39,7 @@ describe('IpcServiceProxyHandler', () => {
       const channelClient = new LocalChannelClient(channelName);
       await channelClient.connect();
 
-      const proxyHandler = new IpcServiceProxyHandler(
+      const proxyHandler = new RpcServiceProxyHandler(
         channelClient,
         serviceName
       );
@@ -54,7 +54,7 @@ describe('IpcServiceProxyHandler', () => {
       const serviceName = 'service';
 
       const channelServer = new LocalChannelServer(channelName);
-      const server = new IpcServer(channelServer);
+      const server = new RpcServer(channelServer);
       const service = new DummyService();
       server.addService(serviceName, service);
       server.start();
@@ -62,7 +62,7 @@ describe('IpcServiceProxyHandler', () => {
       const channelClient = new LocalChannelClient(channelName);
       await channelClient.connect();
 
-      const proxyHandler = new IpcServiceProxyHandler(
+      const proxyHandler = new RpcServiceProxyHandler(
         channelClient,
         serviceName
       );
