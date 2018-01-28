@@ -1,4 +1,4 @@
-import path from 'path';
+import path = require('path');
 
 export default class SocketUtils {
   public static getSocketPath(socketId: string) {

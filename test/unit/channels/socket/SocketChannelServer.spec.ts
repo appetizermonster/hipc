@@ -1,4 +1,4 @@
-import net from 'net';
+import net = require('net');
 
 import JsonSocket from 'channels/socket/JsonSocket';
 import SocketChannelServer from 'channels/socket/SocketChannelServer';

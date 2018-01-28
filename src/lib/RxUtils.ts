@@ -1,4 +1,4 @@
-import Rx from 'rxjs';
+import Rx = require('rxjs');
 
 import { IChannelClient } from 'types';
 

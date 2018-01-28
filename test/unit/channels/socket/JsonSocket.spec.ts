@@ -1,4 +1,4 @@
-import net from 'net';
+import net = require('net');
 
 import JsonSocket, { compositeData } from 'channels/socket/JsonSocket';
 import PromiseUtils from 'lib/PromiseUtils';

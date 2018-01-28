@@ -1,4 +1,4 @@
-import net from 'net';
+import net = require('net');
 
 import ListMap from 'lib/ListMap';
 import RxUtils from 'lib/RxUtils';

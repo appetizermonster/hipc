@@ -1,4 +1,4 @@
-import uuid from 'uuid/v4';
+import uuid = require('uuid/v4');
 
 import RxUtils from './lib/RxUtils';
 import { IRpcClientOptions } from './RpcClient';
