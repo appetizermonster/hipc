@@ -8,7 +8,7 @@ describe('LocalChannelServer', () => {
     };
   }
 
-  describe('start', () => {
+  describe('#start', () => {
     it('should throw error if already started', async () => {
       const server = new LocalChannelServer('x');
       await server.start();
@@ -21,7 +21,7 @@ describe('LocalChannelServer', () => {
     });
   });
 
-  describe('listen', () => {
+  describe('#listen', () => {
     it('should register handler to listen messages for the topic', async () => {
       const server = new LocalChannelServer('x');
       await server.start();
@@ -38,7 +38,7 @@ describe('LocalChannelServer', () => {
     });
   });
 
-  describe('unlisten', () => {
+  describe('#unlisten', () => {
     it('should unregister handler to listen messages for the topic', async () => {
       const server = new LocalChannelServer('x');
       await server.start();

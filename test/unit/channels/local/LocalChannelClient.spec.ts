@@ -17,7 +17,7 @@ describe('LocalChannelClient', () => {
 
   beforeEach(() => clearAllServers());
 
-  describe('connect', () => {
+  describe('#connect', () => {
     it('should throw error if server is not ready', async () => {
       const client = new LocalChannelClient('s');
       await expect(client.connect()).rejects.toBeDefined();
@@ -32,7 +32,7 @@ describe('LocalChannelClient', () => {
     });
   });
 
-  describe('send', () => {
+  describe('#send', () => {
     it('should throw error if not connected', () => {
       const client = new LocalChannelClient('x');
       const fn = () => client.send('topic', {});
@@ -52,7 +52,7 @@ describe('LocalChannelClient', () => {
     });
   });
 
-  describe('listen', () => {
+  describe('#listen', () => {
     it('should register handler to listen messages for the topic', async () => {
       const channelName = 'x';
       const server = registerEchoServer(channelName);
@@ -69,7 +69,7 @@ describe('LocalChannelClient', () => {
     });
   });
 
-  describe('unlisten', () => {
+  describe('#unlisten', () => {
     it('should unregister handler from the topic', async () => {
       const channelName = 'x';
 

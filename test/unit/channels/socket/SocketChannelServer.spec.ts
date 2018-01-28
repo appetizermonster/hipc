@@ -22,7 +22,7 @@ describe('SocketChannelServer', () => {
     }
   });
 
-  describe('start', () => {
+  describe('#start', () => {
     it('should make ipc pipe', async () => {
       const socketId = 'SocketChannelServer-start-ipcpipe';
       server = new SocketChannelServer(socketId);
@@ -61,7 +61,7 @@ describe('SocketChannelServer', () => {
     });
   });
 
-  describe('listen', () => {
+  describe('#listen', () => {
     it('should make listeners to listen messages', async () => {
       const socketId = 'SocketChannelServer-listen-listeners';
       server = new SocketChannelServer(socketId);
@@ -85,7 +85,7 @@ describe('SocketChannelServer', () => {
     });
   });
 
-  describe('unlisten', () => {
+  describe('#unlisten', () => {
     it('should make listeners to unlisten messages', async () => {
       const socketId = 'SocketChannelServer-unlisten-listeners';
       server = new SocketChannelServer(socketId);

@@ -16,7 +16,7 @@ class DummyService implements IIpcService {
 }
 
 describe('IpcServiceProxyHandler', () => {
-  describe('get', () => {
+  describe('#get', () => {
     it('should return proxy function', () => {
       const mockChannel = wrapFunctionsWithMockFn(new MockChannelClient());
       const proxyHandler = new IpcServiceProxyHandler(mockChannel, 'service');
@@ -25,7 +25,7 @@ describe('IpcServiceProxyHandler', () => {
     });
   });
 
-  describe('proxyFunction', () => {
+  describe('#proxyFunction', () => {
     it('should call the remote function on server', async () => {
       const channelName = 'proxyFunction-success';
       const serviceName = 'service';

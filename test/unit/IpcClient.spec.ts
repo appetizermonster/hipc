@@ -8,7 +8,7 @@ interface IDummyService extends IIpcService {
 }
 
 describe('IpcClient', () => {
-  describe('connect', () => {
+  describe('#connect', () => {
     it('should call `connect` on the channel', async () => {
       const mockChannel = wrapFunctionsWithMockFn(new MockChannelClient());
       const client = new IpcClient(mockChannel);
@@ -17,7 +17,7 @@ describe('IpcClient', () => {
     });
   });
 
-  describe('getServiceProxy', () => {
+  describe('#getServiceProxy', () => {
     it('should throw error if not connected', () => {
       const mockChannel = wrapFunctionsWithMockFn(new MockChannelClient());
       const client = new IpcClient(mockChannel);

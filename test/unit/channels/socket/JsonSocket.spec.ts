@@ -6,7 +6,7 @@ import MockSocket from '../../../helpers/MockSocket';
 import { wrapFunctionsWithMockFn } from '../../../helpers/MockUtils';
 
 describe('JsonSocket', () => {
-  describe('constructor', () => {
+  describe('#constructor', () => {
     it('should accept net.Socket Instance as a parameter', () => {
       const mockSocket = wrapFunctionsWithMockFn(new MockSocket());
       const jsonSocket = new JsonSocket((mockSocket as any) as net.Socket);
@@ -20,7 +20,7 @@ describe('JsonSocket', () => {
     });
   });
 
-  describe('connectIpc', () => {
+  describe('#connectIpc', () => {
     it('should call socket.connect with socketPath', async () => {
       const mockSocket = wrapFunctionsWithMockFn(new MockSocket());
       const socketPath = 'testipc';
@@ -30,7 +30,7 @@ describe('JsonSocket', () => {
     });
   });
 
-  describe('close', () => {
+  describe('#close', () => {
     it('should throw error if not connected', () => {
       const mockSocket = wrapFunctionsWithMockFn(new MockSocket());
       const jsonSocket = new JsonSocket((mockSocket as any) as net.Socket);
@@ -49,7 +49,7 @@ describe('JsonSocket', () => {
     });
   });
 
-  describe("on('message')", () => {
+  describe("#on('message')", () => {
     it('should parse json and emit messages', async () => {
       const mockSocket = wrapFunctionsWithMockFn(new MockSocket());
       const jsonSocket = new JsonSocket((mockSocket as any) as net.Socket);
@@ -90,7 +90,7 @@ describe('JsonSocket', () => {
     });
   });
 
-  describe('send', () => {
+  describe('#send', () => {
     it('should make json and write it to the socket', async () => {
       const mockSocket = wrapFunctionsWithMockFn(new MockSocket());
       const jsonSocket = new JsonSocket((mockSocket as any) as net.Socket);

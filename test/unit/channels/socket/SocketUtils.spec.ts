@@ -1,7 +1,7 @@
 import SocketUtils from 'channels/socket/SocketUtils';
 
 describe('SocketUtils', () => {
-  describe('getSocketPath', () => {
+  describe('#getSocketPath', () => {
     let oldPlatform: NodeJS.Platform;
 
     beforeEach(() => {
@@ -44,7 +44,7 @@ describe('SocketUtils', () => {
     });
   });
 
-  describe('getWindowsSocketPath', () => {
+  describe('#getWindowsSocketPath', () => {
     it('should return type of string', () => {
       const socketPath = SocketUtils.getWindowsSocketPath('foripc');
       expect(typeof socketPath).toBe('string');
@@ -56,7 +56,7 @@ describe('SocketUtils', () => {
     });
   });
 
-  describe('getUnixSocketPath', () => {
+  describe('#getUnixSocketPath', () => {
     it('should return type of string', () => {
       const socketPath = SocketUtils.getUnixSocketPath('thisissocket');
       expect(typeof socketPath).toBe('string');

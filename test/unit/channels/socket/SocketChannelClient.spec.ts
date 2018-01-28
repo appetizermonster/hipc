@@ -17,7 +17,7 @@ describe('SocketChannelClient', () => {
     }
   });
 
-  describe('connect', () => {
+  describe('#connect', () => {
     it('should reject if server is not ready', async () => {
       client = new SocketChannelClient('SocketChannelClient-connect-notready');
       await expect(client.connect()).rejects.toBeDefined();
@@ -37,7 +37,7 @@ describe('SocketChannelClient', () => {
     });
   });
 
-  describe('send', () => {
+  describe('#send', () => {
     it("should throw error if it's not connected", () => {
       client = new SocketChannelClient(
         'SocketChannelClient-send-not-connected'
@@ -72,7 +72,7 @@ describe('SocketChannelClient', () => {
     });
   });
 
-  describe('listen', () => {
+  describe('#listen', () => {
     it('should make listeners to listen messages', async () => {
       const socketId = 'SocketChannelClient-listen-listeners';
       mockServer = new MockJsonServer(socketId);
@@ -99,7 +99,7 @@ describe('SocketChannelClient', () => {
     });
   });
 
-  describe('unlisten', () => {
+  describe('#unlisten', () => {
     it('should make listeners to unlisten messages', async () => {
       const socketId = 'SocketChannelClient-unlisten-listeners';
       mockServer = new MockJsonServer(socketId);
