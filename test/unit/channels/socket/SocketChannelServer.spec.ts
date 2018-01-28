@@ -49,6 +49,9 @@ describe('SocketChannelServer', () => {
       await expect(replyPromise).resolves.toMatchObject({
         type: 'hello-reply'
       });
+
+      jsonSocket.close();
+      server.close();
     });
   });
 
