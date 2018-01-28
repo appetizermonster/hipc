@@ -5,7 +5,7 @@ import RxUtils from 'lib/RxUtils';
 
 const JSON_BUFFER_SEPARATOR = '@';
 
-export type JsonSocketEventName = 'message';
+export type JsonSocketEventName = 'message' | 'error';
 
 export function compositeData(obj: any): string {
   const json = JSON.stringify(obj);
@@ -75,7 +75,7 @@ export default class JsonSocket {
   }
 
   private onSocketError(e: Error): void {
-    console.error(e);
+    this.emit('error', e);
   }
 
   private emit(eventName: JsonSocketEventName, ...args: any[]) {
