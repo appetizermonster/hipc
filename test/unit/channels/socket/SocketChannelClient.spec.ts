@@ -3,54 +3,63 @@ import PromiseUtils from 'lib/PromiseUtils';
 import MockJsonServer from '../../../helpers/MockJsonServer';
 
 describe('SocketChannelClient', () => {
+  let client: SocketChannelClient | null;
+  let mockServer: MockJsonServer | null;
+
+  afterEach(() => {
+    if (client) {
+      client.close();
+      client = null;
+    }
+    if (mockServer) {
+      mockServer.close();
+      mockServer = null;
+    }
+  });
+
   describe('connect', () => {
     it('should reject if server is not ready', async () => {
-      const client = new SocketChannelClient(
-        'SocketChannelClient-connect-notready'
-      );
+      client = new SocketChannelClient('SocketChannelClient-connect-notready');
       await expect(client.connect()).rejects.toBeDefined();
     });
 
     it('should resolve if server is ready', async () => {
       const socketId = 'SocketChannelClient-connect-ready';
-      const mockServer = new MockJsonServer(socketId);
+      mockServer = new MockJsonServer(socketId);
       mockServer.listen((obj: any) => {
         if (obj.type === 'hello') {
-          mockServer.sendToConnectedSocket({ type: 'hello-reply' });
+          mockServer!.sendToConnectedSocket({ type: 'hello-reply' });
         }
       });
 
-      const client = new SocketChannelClient(socketId);
+      client = new SocketChannelClient(socketId);
       await expect(client.connect()).resolves.toBeUndefined();
-
-      client.close();
-      mockServer.close();
     });
   });
 
   describe('send', () => {
     it("should throw error if it's not connected", () => {
-      const client = new SocketChannelClient(
+      client = new SocketChannelClient(
         'SocketChannelClient-send-not-connected'
       );
-      const fn = () => client.send('topic', {});
+      const fn = () => client!.send('topic', {});
       expect(fn).toThrowError();
     });
 
     it('should send payload over socket', async () => {
       const socketId = 'SocketChannelClient-send-payload';
-      const mockServer = new MockJsonServer(socketId);
+      mockServer = new MockJsonServer(socketId);
 
       let receivedObj;
       mockServer.listen(obj => {
         if (obj.type === 'hello') {
-          mockServer.sendToConnectedSocket({ type: 'hello-reply' });
+          mockServer!.sendToConnectedSocket({ type: 'hello-reply' });
         } else {
           receivedObj = obj;
         }
       });
 
-      const client = new SocketChannelClient(socketId);
+      client = new SocketChannelClient(socketId);
       await client.connect();
 
       const topic = 'mytopic';
@@ -60,23 +69,20 @@ describe('SocketChannelClient', () => {
 
       const expectedObj = { type: 'data', data: { topic, payload } };
       expect(receivedObj).toMatchObject(expectedObj);
-
-      client.close();
-      mockServer.close();
     });
   });
 
   describe('listen', () => {
     it('should make listeners to listen messages', async () => {
       const socketId = 'SocketChannelClient-listen-listeners';
-      const mockServer = new MockJsonServer(socketId);
+      mockServer = new MockJsonServer(socketId);
       mockServer.listen((obj: any) => {
         if (obj.type === 'hello') {
-          mockServer.sendToConnectedSocket({ type: 'hello-reply' });
+          mockServer!.sendToConnectedSocket({ type: 'hello-reply' });
         }
       });
 
-      const client = new SocketChannelClient(socketId);
+      client = new SocketChannelClient(socketId);
       await client.connect();
 
       const sendingPayload = { a: 1, b: 'str' };
@@ -90,23 +96,20 @@ describe('SocketChannelClient', () => {
       await PromiseUtils.delay(0.01);
 
       expect(receivedPayload).toEqual(sendingPayload);
-
-      client.close();
-      mockServer.close();
     });
   });
 
   describe('unlisten', () => {
     it('should make listeners to unlisten messages', async () => {
       const socketId = 'SocketChannelClient-unlisten-listeners';
-      const mockServer = new MockJsonServer(socketId);
+      mockServer = new MockJsonServer(socketId);
       mockServer.listen((obj: any) => {
         if (obj.type === 'hello') {
-          mockServer.sendToConnectedSocket({ type: 'hello-reply' });
+          mockServer!.sendToConnectedSocket({ type: 'hello-reply' });
         }
       });
 
-      const client = new SocketChannelClient(socketId);
+      client = new SocketChannelClient(socketId);
       await client.connect();
 
       const sendingPayload = { a: 1, b: { c: 0 } };
@@ -122,9 +125,6 @@ describe('SocketChannelClient', () => {
       await PromiseUtils.delay(0.01);
 
       expect(receivedPayload).toBeUndefined();
-
-      client.close();
-      mockServer.close();
     });
   });
 });

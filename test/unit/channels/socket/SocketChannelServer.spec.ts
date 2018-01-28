@@ -8,36 +8,45 @@ import RxUtils from 'lib/RxUtils';
 import { IChannelSender } from 'types';
 
 describe('SocketChannelServer', () => {
+  let jsonSocket: JsonSocket | null;
+  let server: SocketChannelServer | null;
+
+  afterEach(() => {
+    if (jsonSocket) {
+      jsonSocket.close();
+      jsonSocket = null;
+    }
+    if (server) {
+      server.close();
+      server = null;
+    }
+  });
+
   describe('start', () => {
     it('should make ipc pipe', async () => {
       const socketId = 'SocketChannelServer-start-ipcpipe';
-      const server = new SocketChannelServer(socketId);
+      server = new SocketChannelServer(socketId);
       await server.start();
 
       const socketPath = SocketUtils.getSocketPath(socketId);
-      const jsonSocket = new JsonSocket(new net.Socket());
+      jsonSocket = new JsonSocket(new net.Socket());
       await jsonSocket.connectIpc(socketPath);
-
-      jsonSocket.close();
-      server.close();
     });
 
     it('should reject if server is already running', async () => {
       const socketId = 'SocketChannelServer-start-reject';
-      const server = new SocketChannelServer(socketId);
+      server = new SocketChannelServer(socketId);
       await server.start();
       await expect(server.start()).rejects.toBeDefined();
-
-      server.close();
     });
 
     it('should make server to handshake', async () => {
       const socketId = 'SocketChannelServer-start-handshake';
-      const server = new SocketChannelServer(socketId);
+      server = new SocketChannelServer(socketId);
       await server.start();
 
       const socketPath = SocketUtils.getSocketPath(socketId);
-      const jsonSocket = new JsonSocket(new net.Socket());
+      jsonSocket = new JsonSocket(new net.Socket());
       await jsonSocket.connectIpc(socketPath);
       jsonSocket.send({ type: 'hello' });
 
@@ -49,16 +58,13 @@ describe('SocketChannelServer', () => {
       await expect(replyPromise).resolves.toMatchObject({
         type: 'hello-reply'
       });
-
-      jsonSocket.close();
-      server.close();
     });
   });
 
   describe('listen', () => {
     it('should make listeners to listen messages', async () => {
       const socketId = 'SocketChannelServer-listen-listeners';
-      const server = new SocketChannelServer(socketId);
+      server = new SocketChannelServer(socketId);
       await server.start();
 
       const topic = 'test-topic';
@@ -67,7 +73,7 @@ describe('SocketChannelServer', () => {
       server.listen(topic, (sender, payload) => (receivedPayload = payload));
 
       const socketPath = SocketUtils.getSocketPath(socketId);
-      const jsonSocket = new JsonSocket(new net.Socket());
+      jsonSocket = new JsonSocket(new net.Socket());
       await jsonSocket.connectIpc(socketPath);
 
       const data = { topic, payload: sendingPayload };
@@ -76,16 +82,13 @@ describe('SocketChannelServer', () => {
       await PromiseUtils.delay(0.1);
 
       expect(receivedPayload).toMatchObject(sendingPayload);
-
-      jsonSocket.close();
-      server.close();
     });
   });
 
   describe('unlisten', () => {
     it('should make listeners to unlisten messages', async () => {
       const socketId = 'SocketChannelServer-unlisten-listeners';
-      const server = new SocketChannelServer(socketId);
+      server = new SocketChannelServer(socketId);
       await server.start();
 
       let receivedPayload;
@@ -96,7 +99,7 @@ describe('SocketChannelServer', () => {
       server.unlisten(topic, listener);
 
       const socketPath = SocketUtils.getSocketPath(socketId);
-      const jsonSocket = new JsonSocket(new net.Socket());
+      jsonSocket = new JsonSocket(new net.Socket());
       await jsonSocket.connectIpc(socketPath);
 
       const data = { topic, payload: {} };
@@ -105,9 +108,6 @@ describe('SocketChannelServer', () => {
       await PromiseUtils.delay(0.1);
 
       expect(receivedPayload).toBeUndefined();
-
-      jsonSocket.close();
-      server.close();
     });
   });
 });
