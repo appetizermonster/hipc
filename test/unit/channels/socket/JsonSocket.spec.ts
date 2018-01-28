@@ -20,12 +20,12 @@ describe('JsonSocket', () => {
     });
   });
 
-  describe('#connectIpc', () => {
+  describe('#connect', () => {
     it('should call socket.connect with socketPath', async () => {
       const mockSocket = wrapFunctionsWithMockFn(new MockSocket());
       const socketPath = 'testipc';
       const jsonSocket = new JsonSocket((mockSocket as any) as net.Socket);
-      await jsonSocket.connectIpc(socketPath);
+      await jsonSocket.connect(socketPath);
       expect(mockSocket.connect).toBeCalledWith(socketPath);
     });
   });
@@ -43,7 +43,7 @@ describe('JsonSocket', () => {
     it("should call 'end' function on the socket", async () => {
       const mockSocket = wrapFunctionsWithMockFn(new MockSocket());
       const jsonSocket = new JsonSocket((mockSocket as any) as net.Socket);
-      await jsonSocket.connectIpc('testipc');
+      await jsonSocket.connect('testipc');
       jsonSocket.close();
       expect(mockSocket.end).toBeCalled();
     });
@@ -53,7 +53,7 @@ describe('JsonSocket', () => {
     it('should parse json and emit messages', async () => {
       const mockSocket = wrapFunctionsWithMockFn(new MockSocket());
       const jsonSocket = new JsonSocket((mockSocket as any) as net.Socket);
-      await jsonSocket.connectIpc('testipc');
+      await jsonSocket.connect('testipc');
 
       let receivedObject;
       jsonSocket.on('message', (obj: any) => (receivedObject = obj));
@@ -68,7 +68,7 @@ describe('JsonSocket', () => {
     it('should parse data which contains multiple json', async () => {
       const mockSocket = wrapFunctionsWithMockFn(new MockSocket());
       const jsonSocket = new JsonSocket((mockSocket as any) as net.Socket);
-      await jsonSocket.connectIpc('testipc');
+      await jsonSocket.connect('testipc');
 
       const receivedObjects: any[] = [];
       jsonSocket.on('message', (obj: any) => receivedObjects.push(obj));
@@ -94,7 +94,7 @@ describe('JsonSocket', () => {
     it('should make json and write it to the socket', async () => {
       const mockSocket = wrapFunctionsWithMockFn(new MockSocket());
       const jsonSocket = new JsonSocket((mockSocket as any) as net.Socket);
-      await jsonSocket.connectIpc('testipc');
+      await jsonSocket.connect('testipc');
 
       const sendingObj = { a: 1 };
       jsonSocket.send(sendingObj);
@@ -106,7 +106,7 @@ describe('JsonSocket', () => {
     it('should send json on drain event if buffer is full', async () => {
       const mockSocket = wrapFunctionsWithMockFn(new MockSocket());
       const jsonSocket = new JsonSocket((mockSocket as any) as net.Socket);
-      await jsonSocket.connectIpc('testipc');
+      await jsonSocket.connect('testipc');
 
       const sendingObj = { a: 1 };
       mockSocket.setWriteable(false);

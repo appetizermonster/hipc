@@ -18,7 +18,7 @@ export default class SocketChannelClient implements IChannelClient {
   public async connect(): Promise<void> {
     const socket = new net.Socket();
     this.jsonSocket = new JsonSocket(socket);
-    await this.jsonSocket.connectIpc(this.socketPath);
+    await this.jsonSocket.connect(this.socketPath);
 
     // Handshaking
     this.jsonSocket.send({ type: 'hello' });

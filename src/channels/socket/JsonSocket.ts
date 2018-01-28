@@ -27,7 +27,7 @@ export default class JsonSocket {
     this.socket.on('error', this.onSocketError.bind(this));
   }
 
-  public async connectIpc(socketPath: string): Promise<void> {
+  public async connect(socketPath: string): Promise<void> {
     this.socket!.connect(socketPath);
 
     await RxUtils.observableFromEvent(this.socket!, 'connect')

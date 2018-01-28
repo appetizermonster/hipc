@@ -30,7 +30,7 @@ describe('SocketChannelServer', () => {
 
       const socketPath = SocketUtils.getSocketPath(socketId);
       jsonSocket = new JsonSocket(new net.Socket());
-      await jsonSocket.connectIpc(socketPath);
+      await jsonSocket.connect(socketPath);
     });
 
     it('should reject if server is already running', async () => {
@@ -47,7 +47,7 @@ describe('SocketChannelServer', () => {
 
       const socketPath = SocketUtils.getSocketPath(socketId);
       jsonSocket = new JsonSocket(new net.Socket());
-      await jsonSocket.connectIpc(socketPath);
+      await jsonSocket.connect(socketPath);
       jsonSocket.send({ type: 'hello' });
 
       const replyPromise = RxUtils.observableFromEvent(jsonSocket, 'message')
@@ -74,7 +74,7 @@ describe('SocketChannelServer', () => {
 
       const socketPath = SocketUtils.getSocketPath(socketId);
       jsonSocket = new JsonSocket(new net.Socket());
-      await jsonSocket.connectIpc(socketPath);
+      await jsonSocket.connect(socketPath);
 
       const data = { topic, payload: sendingPayload };
       jsonSocket.send({ type: 'hello' });
@@ -100,7 +100,7 @@ describe('SocketChannelServer', () => {
 
       const socketPath = SocketUtils.getSocketPath(socketId);
       jsonSocket = new JsonSocket(new net.Socket());
-      await jsonSocket.connectIpc(socketPath);
+      await jsonSocket.connect(socketPath);
 
       const data = { topic, payload: {} };
       jsonSocket.send({ type: 'hello' });
